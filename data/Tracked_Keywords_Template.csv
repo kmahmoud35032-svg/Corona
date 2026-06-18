@@ -1,0 +1,228 @@
+Keyword,Our_SKU,Brand,Category,Is_Ours,Notes
+"Bimbo cake chocolate 25g",FGBM001,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo cake chocolate 50g",FGBM002,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo cake chocolate 6pack",FGBM003,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo cake chocolate 12pack",FGBM004,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo cake chocolate 24pack",FGBM005,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo brownie chocolate 25g",FGBM006,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo brownie chocolate 50g",FGBM007,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo brownie chocolate 6pack",FGBM008,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo brownie chocolate 12pack",FGBM009,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo Swiss roll chocolate 30g",FGBM010,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo Swiss roll chocolate 60g",FGBM011,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo Swiss roll chocolate 6pack",FGBM012,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo Swiss roll chocolate 12pack",FGBM013,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo cake vanilla cream 25g",FGBM014,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo cake vanilla cream 50g",FGBM015,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo cake vanilla cream 6pack",FGBM016,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo cake vanilla cream 12pack",FGBM017,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo cake caramel 25g",FGBM018,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo cake caramel 6pack",FGBM019,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo cake coconut 25g",FGBM020,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo cake coconut 6pack",FGBM021,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo cake lemon 25g",FGBM022,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo cake lemon 6pack",FGBM023,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo cake strawberry 25g",FGBM024,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo cake strawberry 6pack",FGBM025,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo mini cakes chocolate 4pack",FGBM026,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo mini cakes chocolate 8pack",FGBM027,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo mini cakes vanilla 4pack",FGBM028,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo mini cakes vanilla 8pack",FGBM029,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo layer cake chocolate 200g",FGBM030,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo layer cake vanilla 200g",FGBM031,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo cake chocolate cream 25g",FGBM032,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo cake display box",FGBM033,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo cake family pack",FGBM034,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Bimbo assorted cakes pack",FGBM035,Corona,Bimbo,TRUE,REPLACE SKU with D365 FO code
+"Corona milk chocolate 20g",FGCB001,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona milk chocolate 25g",FGCB002,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona milk chocolate 30g",FGCB003,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona milk chocolate 40g",FGCB004,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona milk chocolate 50g",FGCB005,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona milk chocolate 65g",FGCB006,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona milk chocolate 100g",FGCB007,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona milk chocolate 150g",FGCB008,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona milk chocolate 200g",FGCB009,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona milk chocolate multipack",FGCB010,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona dark chocolate 25g",FGCB011,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona dark chocolate 40g",FGCB012,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona dark chocolate 65g",FGCB013,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona dark chocolate 100g",FGCB014,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona dark chocolate 150g",FGCB015,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona dark chocolate 200g",FGCB016,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona hazelnut chocolate 25g",FGCB017,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona hazelnut chocolate 40g",FGCB018,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona hazelnut chocolate 65g",FGCB019,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona hazelnut chocolate 100g",FGCB020,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona hazelnut chocolate 150g",FGCB021,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona hazelnut chocolate 200g",FGCB022,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona almond chocolate 25g",FGCB023,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona almond chocolate 40g",FGCB024,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona almond chocolate 65g",FGCB025,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona almond chocolate 100g",FGCB026,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona white chocolate 25g",FGCB027,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona white chocolate 40g",FGCB028,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona white chocolate 65g",FGCB029,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona white chocolate 100g",FGCB030,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate tablet milk 30g",FGCB031,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate tablet milk 50g",FGCB032,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate tablet milk 100g",FGCB033,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate tablet milk 200g",FGCB034,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate tablet dark 30g",FGCB035,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate tablet dark 50g",FGCB036,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate tablet dark 100g",FGCB037,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate tablet dark 200g",FGCB038,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate assorted box 100g",FGCB039,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate assorted box 200g",FGCB040,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate assorted box 300g",FGCB041,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate assorted box 500g",FGCB042,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate gift box",FGCB043,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate truffle box",FGCB044,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona premium chocolate bar 40g",FGCB045,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona premium chocolate bar 65g",FGCB046,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona premium chocolate bar 100g",FGCB047,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona milk chocolate multipack 6",FGCB048,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona milk chocolate multipack 12",FGCB049,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona dark chocolate multipack 6",FGCB050,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona dark chocolate multipack 12",FGCB051,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona hazelnut chocolate multipack 6",FGCB052,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona hazelnut chocolate multipack 12",FGCB053,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate bar orange 40g",FGCB054,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate bar orange 65g",FGCB055,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate bar crispy 40g",FGCB056,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate bar crispy 65g",FGCB057,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate bar caramel 40g",FGCB058,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate bar caramel 65g",FGCB059,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate bar raisin 100g",FGCB060,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate snack bar 20g",FGCB061,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate snack bar 20g 6pack",FGCB062,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate snack bar 20g 12pack",FGCB063,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate snack bar display box",FGCB064,Corona,Chocolate Bars,TRUE,REPLACE SKU with D365 FO code
+"Corona wafer chocolate 20g",FGWF001,Corona,Wafer,TRUE,REPLACE SKU with D365 FO code
+"Corona wafer chocolate 40g",FGWF002,Corona,Wafer,TRUE,REPLACE SKU with D365 FO code
+"Corona wafer chocolate 6pack",FGWF003,Corona,Wafer,TRUE,REPLACE SKU with D365 FO code
+"Corona wafer chocolate 12pack",FGWF004,Corona,Wafer,TRUE,REPLACE SKU with D365 FO code
+"Corona wafer chocolate 24pack",FGWF005,Corona,Wafer,TRUE,REPLACE SKU with D365 FO code
+"Corona wafer chocolate display",FGWF006,Corona,Wafer,TRUE,REPLACE SKU with D365 FO code
+"Corona wafer vanilla 20g",FGWF007,Corona,Wafer,TRUE,REPLACE SKU with D365 FO code
+"Corona wafer vanilla 40g",FGWF008,Corona,Wafer,TRUE,REPLACE SKU with D365 FO code
+"Corona wafer vanilla 6pack",FGWF009,Corona,Wafer,TRUE,REPLACE SKU with D365 FO code
+"Corona wafer vanilla 12pack",FGWF010,Corona,Wafer,TRUE,REPLACE SKU with D365 FO code
+"Corona wafer hazelnut 20g",FGWF011,Corona,Wafer,TRUE,REPLACE SKU with D365 FO code
+"Corona wafer hazelnut 40g",FGWF012,Corona,Wafer,TRUE,REPLACE SKU with D365 FO code
+"Corona wafer hazelnut 6pack",FGWF013,Corona,Wafer,TRUE,REPLACE SKU with D365 FO code
+"Corona wafer hazelnut 12pack",FGWF014,Corona,Wafer,TRUE,REPLACE SKU with D365 FO code
+"Corona wafer strawberry 20g",FGWF015,Corona,Wafer,TRUE,REPLACE SKU with D365 FO code
+"Corona wafer strawberry 40g",FGWF016,Corona,Wafer,TRUE,REPLACE SKU with D365 FO code
+"Corona wafer strawberry 6pack",FGWF017,Corona,Wafer,TRUE,REPLACE SKU with D365 FO code
+"Corona wafer strawberry 12pack",FGWF018,Corona,Wafer,TRUE,REPLACE SKU with D365 FO code
+"Corona wafer cream assorted",FGWF019,Corona,Wafer,TRUE,REPLACE SKU with D365 FO code
+"Corona wafer roll chocolate",FGWF020,Corona,Wafer,TRUE,REPLACE SKU with D365 FO code
+"Corona wafer roll vanilla",FGWF021,Corona,Wafer,TRUE,REPLACE SKU with D365 FO code
+"Corona wafer fingers chocolate 100g",FGWF022,Corona,Wafer,TRUE,REPLACE SKU with D365 FO code
+"Corona wafer fingers vanilla 100g",FGWF023,Corona,Wafer,TRUE,REPLACE SKU with D365 FO code
+"Corona wafer family pack 200g",FGWF024,Corona,Wafer,TRUE,REPLACE SKU with D365 FO code
+"Corona cocoa powder 125g",FGCO001,Corona,Cocoa,TRUE,REPLACE SKU with D365 FO code
+"Corona cocoa powder 250g",FGCO002,Corona,Cocoa,TRUE,REPLACE SKU with D365 FO code
+"Corona cocoa powder 500g",FGCO003,Corona,Cocoa,TRUE,REPLACE SKU with D365 FO code
+"Corona cocoa powder 1kg",FGCO004,Corona,Cocoa,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate drinking powder 125g",FGCO005,Corona,Cocoa,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate drinking powder 250g",FGCO006,Corona,Cocoa,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate drinking powder 500g",FGCO007,Corona,Cocoa,TRUE,REPLACE SKU with D365 FO code
+"Corona chocolate drinking powder 1kg",FGCO008,Corona,Cocoa,TRUE,REPLACE SKU with D365 FO code
+"Corona cocoa mix sachet 14g single",FGCO009,Corona,Cocoa,TRUE,REPLACE SKU with D365 FO code
+"Corona cocoa mix sachet 10pack",FGCO010,Corona,Cocoa,TRUE,REPLACE SKU with D365 FO code
+"Corona cocoa mix sachet 20pack",FGCO011,Corona,Cocoa,TRUE,REPLACE SKU with D365 FO code
+"Corona cocoa mix tin 200g",FGCO012,Corona,Cocoa,TRUE,REPLACE SKU with D365 FO code
+"Corona cocoa mix tin 300g",FGCO013,Corona,Cocoa,TRUE,REPLACE SKU with D365 FO code
+"Corona cocoa mix tin 400g",FGCO014,Corona,Cocoa,TRUE,REPLACE SKU with D365 FO code
+"Corona hot chocolate mix 500g",FGCO015,Corona,Cocoa,TRUE,REPLACE SKU with D365 FO code
+"Corona instant cocoa drink 25g sachet 10pack",FGCO016,Corona,Cocoa,TRUE,REPLACE SKU with D365 FO code
+"Corona gummy bears 25g",FGCN001,Corona,Candy,TRUE,REPLACE SKU with D365 FO code
+"Corona gummy bears 50g",FGCN002,Corona,Candy,TRUE,REPLACE SKU with D365 FO code
+"Corona gummy bears 100g",FGCN003,Corona,Candy,TRUE,REPLACE SKU with D365 FO code
+"Corona gummy worms 50g",FGCN004,Corona,Candy,TRUE,REPLACE SKU with D365 FO code
+"Corona gummy worms 100g",FGCN005,Corona,Candy,TRUE,REPLACE SKU with D365 FO code
+"Corona hard candy 50g",FGCN006,Corona,Candy,TRUE,REPLACE SKU with D365 FO code
+"Corona hard candy 100g",FGCN007,Corona,Candy,TRUE,REPLACE SKU with D365 FO code
+"Corona hard candy 200g bag",FGCN008,Corona,Candy,TRUE,REPLACE SKU with D365 FO code
+"Corona lollipop 10g single",FGCN009,Corona,Candy,TRUE,REPLACE SKU with D365 FO code
+"Corona lollipop 10g 10pack",FGCN010,Corona,Candy,TRUE,REPLACE SKU with D365 FO code
+"Corona lollipop 10g 20pack",FGCN011,Corona,Candy,TRUE,REPLACE SKU with D365 FO code
+"Corona candy mix bag 200g",FGCN012,Corona,Candy,TRUE,REPLACE SKU with D365 FO code
+"Corona candy display jar",FGCN013,Corona,Candy,TRUE,REPLACE SKU with D365 FO code
+"Corona sour candy 50g",FGCN014,Corona,Candy,TRUE,REPLACE SKU with D365 FO code
+"Corona sour candy 100g",FGCN015,Corona,Candy,TRUE,REPLACE SKU with D365 FO code
+"Corona fruit candy 50g",FGCN016,Corona,Candy,TRUE,REPLACE SKU with D365 FO code
+"Corona candy assorted 100g",FGCN017,Corona,Candy,TRUE,REPLACE SKU with D365 FO code
+"HOHOs King cake",COMP_BM001,HOHOs King,Bimbo,FALSE,Edita brand
+"HOHOs King chocolate cake 6pack",COMP_BM002,HOHOs King,Bimbo,FALSE,Edita brand
+"HOHOs King chocolate cake 12pack",COMP_BM003,HOHOs King,Bimbo,FALSE,Edita brand
+"Todo chocolate brownie cake",COMP_BM004,Todo,Bimbo,FALSE,
+"Todo brownie 6pack",COMP_BM005,Todo,Bimbo,FALSE,
+"Tiger Tail cake Edita",COMP_BM006,Tiger Tail,Bimbo,FALSE,Edita brand
+"Tiger Tail chocolate 6pack",COMP_BM007,Tiger Tail,Bimbo,FALSE,Edita brand
+"Katakito cake",COMP_BM008,Katakito,Bimbo,FALSE,
+"New Katakito cake",COMP_BM009,New Katakito,Bimbo,FALSE,
+"Katakito multipack",COMP_BM010,Katakito,Bimbo,FALSE,
+"Cadbury Dairy Milk 25g",COMP_CB001,Cadbury,Chocolate Bars,FALSE,
+"Cadbury Dairy Milk 40g",COMP_CB002,Cadbury,Chocolate Bars,FALSE,
+"Cadbury Dairy Milk 65g",COMP_CB003,Cadbury,Chocolate Bars,FALSE,
+"Cadbury Dairy Milk 100g",COMP_CB004,Cadbury,Chocolate Bars,FALSE,
+"Cadbury Dairy Milk 150g",COMP_CB005,Cadbury,Chocolate Bars,FALSE,
+"Galaxy chocolate 40g",COMP_CB006,Galaxy,Chocolate Bars,FALSE,Mars brand
+"Galaxy chocolate 65g",COMP_CB007,Galaxy,Chocolate Bars,FALSE,Mars brand
+"Galaxy chocolate 100g",COMP_CB008,Galaxy,Chocolate Bars,FALSE,Mars brand
+"Galaxy Smooth Milk 200g",COMP_CB009,Galaxy,Chocolate Bars,FALSE,Mars brand
+"KitKat 2finger",COMP_CB010,KitKat,Chocolate Bars,FALSE,Nestle brand
+"KitKat 4finger",COMP_CB011,KitKat,Chocolate Bars,FALSE,Nestle brand
+"KitKat chunky",COMP_CB012,KitKat,Chocolate Bars,FALSE,Nestle brand
+"KitKat multipack",COMP_CB013,KitKat,Chocolate Bars,FALSE,Nestle brand
+"Kinder Bueno white",COMP_CB014,Kinder Bueno,Chocolate Bars,FALSE,Ferrero brand
+"Kinder Bueno chocolate",COMP_CB015,Kinder Bueno,Chocolate Bars,FALSE,Ferrero brand
+"Kinder Bueno multipack",COMP_CB016,Kinder Bueno,Chocolate Bars,FALSE,Ferrero brand
+"Ritter Sport milk chocolate 100g",COMP_CB017,Ritter Sport,Chocolate Bars,FALSE,
+"Ritter Sport dark chocolate 100g",COMP_CB018,Ritter Sport,Chocolate Bars,FALSE,
+"Ritter Sport hazelnut 100g",COMP_CB019,Ritter Sport,Chocolate Bars,FALSE,
+"Milka milk chocolate 100g",COMP_CB020,Milka,Chocolate Bars,FALSE,Mondelez brand
+"Milka hazelnut 100g",COMP_CB021,Milka,Chocolate Bars,FALSE,Mondelez brand
+"Milka oreo 100g",COMP_CB022,Milka,Chocolate Bars,FALSE,Mondelez brand
+"Snickers chocolate bar 50g",COMP_CB023,Snickers,Chocolate Bars,FALSE,Mars brand
+"Snickers multipack",COMP_CB024,Snickers,Chocolate Bars,FALSE,Mars brand
+"Twix chocolate bar 50g",COMP_CB025,Twix,Chocolate Bars,FALSE,Mars brand
+"Twix multipack",COMP_CB026,Twix,Chocolate Bars,FALSE,Mars brand
+"Bounty chocolate 57g",COMP_CB027,Bounty,Chocolate Bars,FALSE,Mars brand
+"Bounty multipack",COMP_CB028,Bounty,Chocolate Bars,FALSE,Mars brand
+"Bisco Misr wafer chocolate",COMP_WF001,Bisco Misr,Wafer,FALSE,
+"Bisco Misr wafer vanilla",COMP_WF002,Bisco Misr,Wafer,FALSE,
+"Bisco Misr Cocoa Lovers",COMP_WF003,Bisco Misr,Wafer,FALSE,
+"Bisco wafer multipack",COMP_WF004,Bisco Misr,Wafer,FALSE,
+"Loacker wafer vanilla",COMP_WF005,Loacker,Wafer,FALSE,
+"Loacker wafer chocolate",COMP_WF006,Loacker,Wafer,FALSE,
+"Loacker wafer hazelnut",COMP_WF007,Loacker,Wafer,FALSE,
+"Loacker wafer 45g",COMP_WF008,Loacker,Wafer,FALSE,
+"El Shamadan wafer",COMP_WF009,El Shamadan,Wafer,FALSE,
+"El Shamadan wafer chocolate",COMP_WF010,El Shamadan,Wafer,FALSE,
+"Mandolin wafer",COMP_WF011,Mandolin,Wafer,FALSE,
+"Mandolin wafer chocolate",COMP_WF012,Mandolin,Wafer,FALSE,
+"Nestle Nesquik cocoa powder 200g",COMP_CO001,Nestle Nesquik,Cocoa,FALSE,
+"Nestle Nesquik cocoa powder 500g",COMP_CO002,Nestle Nesquik,Cocoa,FALSE,
+"Nestle Nesquik cocoa powder 1kg",COMP_CO003,Nestle Nesquik,Cocoa,FALSE,
+"Nestle Nesquik sachet",COMP_CO004,Nestle Nesquik,Cocoa,FALSE,
+"Cafe O cocoa 3in1 sachet",COMP_CO005,Cafe O,Cocoa,FALSE,
+"Cafe O cocoa 3in1 10pack",COMP_CO006,Cafe O,Cocoa,FALSE,
+"Cafe O cocoa 3in1 20pack",COMP_CO007,Cafe O,Cocoa,FALSE,
+"Haribo gummy bears 80g",COMP_CN001,Haribo,Candy,FALSE,
+"Haribo gummy bears 200g",COMP_CN002,Haribo,Candy,FALSE,
+"Haribo gold bears 100g",COMP_CN003,Haribo,Candy,FALSE,
+"Haribo mini bag 25g",COMP_CN004,Haribo,Candy,FALSE,
+"Bebeto gummy 50g",COMP_CN005,Bebeto,Candy,FALSE,
+"Bebeto gummy 100g",COMP_CN006,Bebeto,Candy,FALSE,
+"Bebeto sour worms",COMP_CN007,Bebeto,Candy,FALSE,
+"Yupi gummy 50g",COMP_CN008,Yupi,Candy,FALSE,
+"Yupi gummy 100g",COMP_CN009,Yupi,Candy,FALSE,
+"Yupi sour mix",COMP_CN010,Yupi,Candy,FALSE,
+"Trolli gummy worms",COMP_CN011,Trolli,Candy,FALSE,
+"Trolli sour worms 100g",COMP_CN012,Trolli,Candy,FALSE,
+"Vidal gummy candy 100g",COMP_CN013,Vidal,Candy,FALSE,
+"Vidal lollipop",COMP_CN014,Vidal,Candy,FALSE,
