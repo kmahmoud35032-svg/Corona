@@ -1,0 +1,609 @@
+{
+  "name": "01 — Corona Price Intelligence | Main Scraper (MVP: Talabat + Breadfast)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 6 * * *"
+            }
+          ]
+        }
+      },
+      "id": "cron-trigger-001",
+      "name": "Cron 06:00 Cairo",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 400],
+      "notes": "Runs daily at 06:00. Timezone = Africa/Cairo (set in workflow Settings tab). Exclude Fridays: change cron to '0 6 * * 0-4,6'"
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $vars.PRICE_INTELLIGENCE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Price_Log",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "gsheets-read-pricelog",
+      "name": "Read Price_Log History",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [460, 400],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE_WITH_GSHEETS_CREDENTIAL_ID",
+          "name": "Google Sheets — Price_Intelligence"
+        }
+      },
+      "notes": "Reads entire Price_Log. Next node caches last-7-days into static data to avoid repeated reads inside the loop."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Cache Price_Log (last 7 days) in workflow static data.\n// Avoids N repeated Google Sheets reads inside the keyword/product loops.\nconst today = new Date();\nconst sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);\n\nconst allItems = $input.all();\nconst staticData = $getWorkflowStaticData('global');\n\nstaticData.pricelog_cache = allItems\n  .map(i => i.json)\n  .filter(row => {\n    if (!row.Date) return false;\n    try { return new Date(row.Date) >= sevenDaysAgo; }\n    catch { return false; }\n  });\n\nstaticData.pricelog_loaded_at = new Date().toISOString();\nstaticData.today = today.toISOString().split('T')[0];\n\n// Output exactly ONE item so Read Tracked_Keywords runs once (not N times)\nreturn [{ json: { status: 'cache_ready', cached_rows: staticData.pricelog_cache.length } }];"
+      },
+      "id": "code-cache-pricelog",
+      "name": "Code_CachePriceLog",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 400]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $vars.PRICE_INTELLIGENCE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Tracked_Keywords",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "gsheets-read-keywords",
+      "name": "Read Tracked_Keywords",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [900, 400],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE_WITH_GSHEETS_CREDENTIAL_ID",
+          "name": "Google Sheets — Price_Intelligence"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "split-loop-keywords",
+      "name": "Loop_Keywords",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [1120, 400],
+      "notes": "Processes one keyword row at a time. output[0] = loop body. output[1] = all keywords done."
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://REPLACE_WITH_TALABAT_MART_SEARCH_ENDPOINT?q={{ encodeURIComponent($json.Keyword) }}&country_code=eg&latitude=30.0444&longitude=31.2357&limit=20",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Accept", "value": "application/json" },
+            { "name": "x-country-code", "value": "eg" },
+            { "name": "Accept-Language", "value": "en" },
+            { "name": "User-Agent", "value": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1" }
+          ]
+        },
+        "options": {
+          "timeout": 15000,
+          "response": { "response": { "responseFormat": "json" } }
+        }
+      },
+      "id": "http-talabat",
+      "name": "HTTP_Talabat",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 260],
+      "onError": "continueRegularOutput",
+      "notes": "PHASE 1 ACTION: Capture the real endpoint + headers from Chrome DevTools > Network > XHR while searching on Talabat Mart Egypt app. Replace the URL and add any auth headers (x-auth-token, Authorization Bearer, etc.)."
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://REPLACE_WITH_BREADFAST_SEARCH_ENDPOINT?q={{ encodeURIComponent($('Loop_Keywords').item.json.Keyword) }}&per_page=20",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Accept", "value": "application/json" },
+            { "name": "x-device-type", "value": "web" },
+            { "name": "Accept-Language", "value": "en" },
+            { "name": "User-Agent", "value": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1" }
+          ]
+        },
+        "options": {
+          "timeout": 15000,
+          "response": { "response": { "responseFormat": "json" } }
+        }
+      },
+      "id": "http-breadfast",
+      "name": "HTTP_Breadfast",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 540],
+      "onError": "continueRegularOutput",
+      "notes": "PHASE 1 ACTION: Capture from DevTools on breadfast.com. Uses $('Loop_Keywords').item.json.Keyword to access current keyword regardless of Talabat response input."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Combine Talabat + Breadfast responses into flat products array.\n// $json = Breadfast API response (current input)\n// $('HTTP_Talabat').first().json = Talabat API response\n// $('Loop_Keywords').item.json = current keyword row from Google Sheets\n\nconst keyword = $('Loop_Keywords').item.json;\nconst talabatRaw = $('HTTP_Talabat').first()?.json || {};\nconst breadfastRaw = $json || {};\nconst today = new Date().toISOString().split('T')[0];\n\nconst products = [];\n\n// ─────────────────────────────────────────────────────\n// PARSE TALABAT RESPONSE\n// Adjust the path below after inspecting DevTools response.\n// Common paths: .data.items | .results | .products | .data.products\n// ─────────────────────────────────────────────────────\nconst talabatItems =\n  talabatRaw?.data?.items ??\n  talabatRaw?.results ??\n  talabatRaw?.products ??\n  talabatRaw?.data?.products ??\n  [];\n\nif (Array.isArray(talabatItems)) {\n  for (const item of talabatItems) {\n    products.push({\n      platform: 'Talabat',\n      keyword: keyword.Keyword,\n      our_sku: keyword.Our_SKU,\n      brand_context: keyword.Brand,\n      category: keyword.Category,\n      is_ours_context: String(keyword.Is_Ours).toLowerCase() === 'true',\n      rawText: JSON.stringify(item).substring(0, 2000), // cap at 2000 chars for Groq\n      scrape_date: today\n    });\n  }\n}\n\n// ─────────────────────────────────────────────────────\n// PARSE BREADFAST RESPONSE\n// Common paths: .data | .products | .items | .data.products\n// ─────────────────────────────────────────────────────\nconst breadfastItems =\n  breadfastRaw?.data ??\n  breadfastRaw?.products ??\n  breadfastRaw?.items ??\n  breadfastRaw?.data?.products ??\n  [];\n\nif (Array.isArray(breadfastItems)) {\n  for (const item of breadfastItems) {\n    products.push({\n      platform: 'Breadfast',\n      keyword: keyword.Keyword,\n      our_sku: keyword.Our_SKU,\n      brand_context: keyword.Brand,\n      category: keyword.Category,\n      is_ours_context: String(keyword.Is_Ours).toLowerCase() === 'true',\n      rawText: JSON.stringify(item).substring(0, 2000),\n      scrape_date: today\n    });\n  }\n}\n\n// If no products found on either platform, return sentinel item\nif (products.length === 0) {\n  return [{\n    json: {\n      _no_results: true,\n      platform: 'BOTH',\n      keyword: keyword.Keyword,\n      scrape_date: today\n    }\n  }];\n}\n\n// Add random delay between 1-3s to reduce anti-bot risk\nconst delay = ms => new Promise(r => setTimeout(r, ms));\nawait delay(1000 + Math.random() * 2000);\n\nreturn products.map(p => ({ json: p }));"
+      },
+      "id": "code-parse-platforms",
+      "name": "Code_ParsePlatforms",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1560, 400],
+      "notes": "After DevTools inspection (Phase 1), update the response path for Talabat and Breadfast to match actual JSON structure."
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "split-loop-products",
+      "name": "Loop_Products",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [1780, 400],
+      "notes": "Processes one product at a time. output[0] = loop body. output[1] = all products done → loops back to Loop_Keywords."
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {
+          "temperature": 0.1,
+          "maxTokens": 500
+        }
+      },
+      "id": "groq-llm",
+      "name": "Groq_LLM",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [2000, 600],
+      "credentials": {
+        "groqApi": {
+          "id": "JQCBvOC9oeYkiJ7I",
+          "name": "Groq account"
+        }
+      },
+      "notes": "Uses existing Groq credential JQCBvOC9oeYkiJ7I. Connected to AI_Normalize via ai_languageModel."
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.rawText }}",
+        "options": {
+          "systemMessage": "You are a product data normalizer for an FMCG price intelligence pipeline at Corona Chocolate S.A.E. in Egypt.\n\nGiven raw scraped JSON/text from an e-commerce platform, extract ONLY valid JSON — no explanation, no markdown, no code fences.\n\nReturn this exact structure:\n{\n  \"brand\": \"string — brand name\",\n  \"product_name\": \"string — product name as listed\",\n  \"pack_size\": \"string — e.g. '24g', '12x25g', '500ml' or null\",\n  \"price_egp\": \"number — current selling price in EGP\",\n  \"original_price_egp\": \"number or null — pre-discount price if shown\",\n  \"promo_type\": \"'Discount%' or 'Bundle' or 'None'\",\n  \"discount_percent\": \"number or null\",\n  \"in_stock\": \"boolean — true if available to order\",\n  \"stock_hint\": \"string or null — e.g. 'only 2 left', 'low stock'\",\n  \"platform\": \"string — platform name\"\n}\n\nRules:\n- If price is missing or zero, set in_stock to false.\n- If 'out of stock', 'unavailable', 'not available' appears in any field, set in_stock to false.\n- Extract discount_percent from either original/current price difference or any % text found.\n- Return ONLY the JSON object. No other text."
+        }
+      },
+      "id": "ai-normalize",
+      "name": "AI_Normalize",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [2000, 400],
+      "notes": "Groq llama-3.3-70b normalizes raw scraped text into structured product JSON."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract the JSON from Groq AI Agent output.\n// AI Agent returns output in $json.output field.\n\nconst aiOutput = $json.output || $json.text || '';\n\n// Pass through sentinel no-results items\nif ($json._no_results) {\n  return [{ json: { ...$json, _skip: true } }];\n}\n\nlet normalized;\ntry {\n  // Strip markdown code fences if AI added them\n  const cleaned = aiOutput\n    .replace(/```json\\n?/gi, '')\n    .replace(/```\\n?/g, '')\n    .trim();\n  const jsonMatch = cleaned.match(/\\{[\\s\\S]*\\}/);\n  normalized = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(cleaned);\n} catch (e) {\n  // Fallback: preserve what we know, flag parse error\n  normalized = {\n    brand: $json.brand_context || 'Unknown',\n    product_name: $json.keyword || 'Unknown',\n    pack_size: null,\n    price_egp: 0,\n    original_price_egp: null,\n    promo_type: 'None',\n    discount_percent: null,\n    in_stock: false,\n    stock_hint: 'AI_PARSE_ERROR: ' + e.message.substring(0, 100),\n    platform: $json.platform,\n    _parse_error: true\n  };\n}\n\nreturn [{\n  json: {\n    ...normalized,\n    // Enrich with keyword context\n    our_sku:    $json.our_sku    || '',\n    category:   $json.category   || '',\n    is_ours:    $json.is_ours_context === true || String($json.is_ours_context) === 'true',\n    platform:   $json.platform   || normalized.platform || '',\n    keyword:    $json.keyword    || '',\n    scrape_date: $json.scrape_date || new Date().toISOString().split('T')[0],\n    _skip:      false\n  }\n}];"
+      },
+      "id": "code-parse-ai",
+      "name": "Code_ParseAI",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2220, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "// OOS Detection — spec Section 6.2\n// Uses pricelog_cache stored by Code_CachePriceLog at workflow start.\n\nconst curr = $json;\nconst today = new Date().toISOString().split('T')[0];\n\n// Skip items flagged as no-results or parse errors\nif (curr._skip) {\n  return [{ json: { ...curr, alertType: null, _skipped: true } }];\n}\n\nconst staticData = $getWorkflowStaticData('global');\nconst cache = staticData.pricelog_cache || [];\n\n// Find the most recent previous entry for this product on the same platform\nconst prevEntry = cache\n  .filter(e => {\n    const platformMatch = e.Platform === curr.platform;\n    const skuMatch =\n      (e.Matched_SKU && e.Matched_SKU === curr.our_sku) ||\n      (e.Raw_Product_Name && curr.product_name &&\n        e.Raw_Product_Name.toLowerCase().includes(curr.product_name.toLowerCase().substring(0, 12)));\n    const notToday = e.Date !== today;\n    return platformMatch && skuMatch && notToday;\n  })\n  .sort((a, b) => new Date(b.Date) - new Date(a.Date))[0];\n\nlet alertType = null;\nlet first_seen_oos = '';\n\nif (prevEntry) {\n  const wasInStock =\n    prevEntry.In_Stock === 'TRUE' ||\n    prevEntry.In_Stock === true ||\n    prevEntry.In_Stock === 'true';\n\n  if (wasInStock && !curr.in_stock) {\n    // Transition: in-stock → out-of-stock\n    alertType = curr.is_ours\n      ? 'WARNING_OOS_START'\n      : 'OPPORTUNITY_COMPETITOR_OOS';\n    first_seen_oos = new Date().toISOString();\n  } else if (!curr.in_stock && curr.is_ours) {\n    // Already OOS — check if >48 hours\n    const fso = prevEntry.First_Seen_OOS || '';\n    if (fso) {\n      const hours = (Date.now() - new Date(fso)) / 36e5;\n      if (hours > 48) {\n        alertType = 'CRITICAL_OOS_PERSISTENT';\n      }\n      first_seen_oos = fso; // preserve original OOS timestamp\n    }\n  }\n} else if (!curr.in_stock && curr.is_ours) {\n  // No previous entry found, product is OOS — treat as new OOS event\n  alertType = 'WARNING_OOS_START';\n  first_seen_oos = new Date().toISOString();\n}\n\n// Also update cache with today's entry so within-day deduplication works\nif (staticData.pricelog_cache) {\n  staticData.pricelog_cache.push({\n    Date: today,\n    Platform: curr.platform,\n    Matched_SKU: curr.our_sku,\n    Raw_Product_Name: curr.product_name,\n    In_Stock: curr.in_stock,\n    First_Seen_OOS: first_seen_oos,\n    Price_EGP: curr.price_egp\n  });\n}\n\nreturn [{\n  json: {\n    // Price_Log columns (mapped to exact sheet headers)\n    Date:                today,\n    Platform:            curr.platform,\n    Raw_Product_Name:    curr.product_name || '',\n    Matched_SKU:         curr.our_sku || '',\n    Brand:               curr.brand || curr.brand_context || '',\n    Category:            curr.category || '',\n    Is_Ours:             curr.is_ours,\n    Price_EGP:           curr.price_egp || 0,\n    Original_Price_EGP:  curr.original_price_egp || '',\n    Promo_Type:          curr.promo_type || 'None',\n    Discount_Percent:    curr.discount_percent || '',\n    In_Stock:            curr.in_stock,\n    Stock_Hint:          curr.stock_hint || '',\n    First_Seen_OOS:      first_seen_oos,\n    // Pass-through for downstream nodes\n    alertType:           alertType,\n    _is_ours:            curr.is_ours,\n    _price_egp:          curr.price_egp || 0,\n    _skipped:            false\n  }\n}];"
+      },
+      "id": "code-oos-detect",
+      "name": "Code_OOSDetect",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2440, 400]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $vars.PRICE_INTELLIGENCE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Price_Log",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date":               "={{ $json.Date }}",
+            "Platform":           "={{ $json.Platform }}",
+            "Raw_Product_Name":   "={{ $json.Raw_Product_Name }}",
+            "Matched_SKU":        "={{ $json.Matched_SKU }}",
+            "Brand":              "={{ $json.Brand }}",
+            "Category":           "={{ $json.Category }}",
+            "Is_Ours":            "={{ $json.Is_Ours }}",
+            "Price_EGP":          "={{ $json.Price_EGP }}",
+            "Original_Price_EGP": "={{ $json.Original_Price_EGP }}",
+            "Promo_Type":         "={{ $json.Promo_Type }}",
+            "Discount_Percent":   "={{ $json.Discount_Percent }}",
+            "In_Stock":           "={{ $json.In_Stock }}",
+            "Stock_Hint":         "={{ $json.Stock_Hint }}",
+            "First_Seen_OOS":     "={{ $json.First_Seen_OOS }}"
+          }
+        },
+        "options": {
+          "skipEmptyRows": true
+        }
+      },
+      "id": "gsheets-append-pricelog",
+      "name": "GSheets_AppendPriceLog",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [2660, 400],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE_WITH_GSHEETS_CREDENTIAL_ID",
+          "name": "Google Sheets — Price_Intelligence"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Price Index Calculation — spec Section 6.3\n// For competitor products: Index_Percent = (Competitor_Price / Our_Price) * 100\n// Looks up Corona's price for the same category from today's cached data.\n\nconst curr = $json;\n\n// Skip errors / no-result items\nif (curr._skipped || !curr.Price_EGP || curr.Price_EGP === 0) {\n  return [{ json: curr }];\n}\n\n// Only calculate index for competitor products\nif (curr._is_ours === true || curr.Is_Ours === true) {\n  return [{ json: { ...curr, _price_index_row: null } }];\n}\n\nconst staticData = $getWorkflowStaticData('global');\nconst cache = staticData.pricelog_cache || [];\nconst today = curr.Date;\n\n// Find Corona's price for same category + platform (today)\nconst coronaRef = cache\n  .filter(e =>\n    (e.Is_Ours === true || e.Is_Ours === 'TRUE' || e.Is_Ours === 'true') &&\n    e.Category === curr.Category &&\n    e.Platform === curr.Platform &&\n    e.In_Stock !== false && e.In_Stock !== 'FALSE' && e.In_Stock !== 'false'\n  )\n  .sort((a, b) => new Date(b.Date) - new Date(a.Date))[0];\n\nif (!coronaRef || !coronaRef.Price_EGP) {\n  // No Corona reference price found for this category+platform today\n  return [{ json: { ...curr, _price_index_row: null } }];\n}\n\nconst indexPercent = Math.round((curr.Price_EGP / coronaRef.Price_EGP) * 100 * 10) / 10;\n\nreturn [{\n  json: {\n    ...curr,\n    _price_index_row: {\n      Date:             today,\n      SKU:              curr.Matched_SKU,\n      Platform:         curr.Platform,\n      Category:         curr.Category,\n      Our_Price:        coronaRef.Price_EGP,\n      Competitor_Price: curr.Price_EGP,\n      Competitor_Brand: curr.Brand,\n      Index_Percent:    indexPercent\n    }\n  }\n}];"
+      },
+      "id": "code-price-index",
+      "name": "Code_PriceIndex",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2880, 400]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $vars.PRICE_INTELLIGENCE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Price_Index",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date":             "={{ $json._price_index_row?.Date }}",
+            "SKU":              "={{ $json._price_index_row?.SKU }}",
+            "Platform":         "={{ $json._price_index_row?.Platform }}",
+            "Category":         "={{ $json._price_index_row?.Category }}",
+            "Our_Price":        "={{ $json._price_index_row?.Our_Price }}",
+            "Competitor_Price": "={{ $json._price_index_row?.Competitor_Price }}",
+            "Competitor_Brand": "={{ $json._price_index_row?.Competitor_Brand }}",
+            "Index_Percent":    "={{ $json._price_index_row?.Index_Percent }}"
+          }
+        },
+        "options": {
+          "skipEmptyRows": true
+        }
+      },
+      "id": "gsheets-append-priceindex",
+      "name": "GSheets_AppendPriceIndex",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [3100, 400],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE_WITH_GSHEETS_CREDENTIAL_ID",
+          "name": "Google Sheets — Price_Intelligence"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "alert-condition-1",
+              "leftValue": "={{ $json.alertType }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            },
+            {
+              "id": "alert-condition-2",
+              "leftValue": "={{ $json.alertType }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "if-has-alert",
+      "name": "IF_HasAlert",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [3320, 400]
+    },
+    {
+      "parameters": {
+        "mode": "expression",
+        "output": "={{ $json.alertType }}",
+        "rules": {
+          "values": [
+            { "outputKey": "WARNING_OOS_START" },
+            { "outputKey": "CRITICAL_OOS_PERSISTENT" },
+            { "outputKey": "OPPORTUNITY_COMPETITOR_OOS" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "switch-alert-type",
+      "name": "Switch_AlertType",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [3540, 260]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $vars.TELEGRAM_TRADE_MARKETING_CHAT_ID }}",
+        "text": "=⚠️ <b>OOS ALERT — {{ $json.Raw_Product_Name }}</b>\n\n📍 Platform: {{ $json.Platform }}\n🏷️ SKU: {{ $json.Matched_SKU }}\n📦 Category: {{ $json.Category }}\n🕐 First seen OOS: {{ new Date($json.First_Seen_OOS).toLocaleString('ar-EG', {timeZone:'Africa/Cairo'}) }}\n\n<i>Action: Confirm with platform e-commerce manager immediately.</i>",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "telegram-warning",
+      "name": "Telegram_Warning",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [3760, 120],
+      "credentials": {
+        "telegramApi": {
+          "id": "REPLACE_WITH_TELEGRAM_CREDENTIAL_ID",
+          "name": "Telegram Bot — Corona Alerts"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $vars.TELEGRAM_TRADE_MARKETING_CHAT_ID }}",
+        "text": "=🚨 <b>CRITICAL: OOS &gt;48h — {{ $json.Raw_Product_Name }}</b>\n\n📍 Platform: {{ $json.Platform }}\n🏷️ SKU: {{ $json.Matched_SKU }}\n📦 Category: {{ $json.Category }}\n🕐 First seen OOS: {{ $json.First_Seen_OOS }}\n⏱️ Duration: {{ Math.round((Date.now() - new Date($json.First_Seen_OOS)) / 36e5) }}h OOS\n\n<b>Escalate to Sales Director. Distribution/supply review required.</b>",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "telegram-critical-trade",
+      "name": "Telegram_Critical_TradeMarketing",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [3760, 280],
+      "credentials": {
+        "telegramApi": {
+          "id": "REPLACE_WITH_TELEGRAM_CREDENTIAL_ID",
+          "name": "Telegram Bot — Corona Alerts"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $vars.TELEGRAM_SALES_DIRECTOR_CHAT_ID }}",
+        "text": "=🚨 <b>CRITICAL OOS ESCALATION — {{ $json.Raw_Product_Name }}</b>\n\n📍 Platform: {{ $json.Platform }}\n🏷️ SKU: {{ $json.Matched_SKU }}\n⏱️ {{ Math.round((Date.now() - new Date($json.First_Seen_OOS)) / 36e5) }} hours OOS\n\n<i>Trade Marketing has been notified. Distribution/supply review requested.</i>",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "telegram-critical-director",
+      "name": "Telegram_Critical_SalesDirector",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [3760, 420],
+      "credentials": {
+        "telegramApi": {
+          "id": "REPLACE_WITH_TELEGRAM_CREDENTIAL_ID",
+          "name": "Telegram Bot — Corona Alerts"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $vars.TELEGRAM_TRADE_MARKETING_CHAT_ID }}",
+        "text": "=🟢 <b>OPPORTUNITY: Competitor OOS — {{ $json.Raw_Product_Name }}</b>\n\n📍 Platform: {{ $json.Platform }}\n🏷️ Competitor: {{ $json.Brand }}\n📦 Category: {{ $json.Category }}\n💡 Price when available: {{ $json.Price_EGP }} EGP\n\n<i>Consider promo push on our {{ $json.Category }} SKUs on {{ $json.Platform }}.</i>",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "telegram-opportunity",
+      "name": "Telegram_Opportunity",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [3760, 580],
+      "credentials": {
+        "telegramApi": {
+          "id": "REPLACE_WITH_TELEGRAM_CREDENTIAL_ID",
+          "name": "Telegram Bot — Corona Alerts"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "noop-no-alert",
+      "name": "NoAlert_NoOp",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [3540, 540]
+    }
+  ],
+  "connections": {
+    "Cron 06:00 Cairo": {
+      "main": [
+        [{ "node": "Read Price_Log History", "type": "main", "index": 0 }]
+      ]
+    },
+    "Read Price_Log History": {
+      "main": [
+        [{ "node": "Code_CachePriceLog", "type": "main", "index": 0 }]
+      ]
+    },
+    "Code_CachePriceLog": {
+      "main": [
+        [{ "node": "Read Tracked_Keywords", "type": "main", "index": 0 }]
+      ]
+    },
+    "Read Tracked_Keywords": {
+      "main": [
+        [{ "node": "Loop_Keywords", "type": "main", "index": 0 }]
+      ]
+    },
+    "Loop_Keywords": {
+      "main": [
+        [{ "node": "HTTP_Talabat", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "HTTP_Talabat": {
+      "main": [
+        [{ "node": "HTTP_Breadfast", "type": "main", "index": 0 }]
+      ]
+    },
+    "HTTP_Breadfast": {
+      "main": [
+        [{ "node": "Code_ParsePlatforms", "type": "main", "index": 0 }]
+      ]
+    },
+    "Code_ParsePlatforms": {
+      "main": [
+        [{ "node": "Loop_Products", "type": "main", "index": 0 }]
+      ]
+    },
+    "Loop_Products": {
+      "main": [
+        [{ "node": "AI_Normalize", "type": "main", "index": 0 }],
+        [{ "node": "Loop_Keywords", "type": "main", "index": 0 }]
+      ]
+    },
+    "Groq_LLM": {
+      "ai_languageModel": [
+        [{ "node": "AI_Normalize", "type": "ai_languageModel", "index": 0 }]
+      ]
+    },
+    "AI_Normalize": {
+      "main": [
+        [{ "node": "Code_ParseAI", "type": "main", "index": 0 }]
+      ]
+    },
+    "Code_ParseAI": {
+      "main": [
+        [{ "node": "Code_OOSDetect", "type": "main", "index": 0 }]
+      ]
+    },
+    "Code_OOSDetect": {
+      "main": [
+        [{ "node": "GSheets_AppendPriceLog", "type": "main", "index": 0 }]
+      ]
+    },
+    "GSheets_AppendPriceLog": {
+      "main": [
+        [{ "node": "Code_PriceIndex", "type": "main", "index": 0 }]
+      ]
+    },
+    "Code_PriceIndex": {
+      "main": [
+        [{ "node": "GSheets_AppendPriceIndex", "type": "main", "index": 0 }]
+      ]
+    },
+    "GSheets_AppendPriceIndex": {
+      "main": [
+        [{ "node": "IF_HasAlert", "type": "main", "index": 0 }]
+      ]
+    },
+    "IF_HasAlert": {
+      "main": [
+        [{ "node": "Switch_AlertType", "type": "main", "index": 0 }],
+        [{ "node": "NoAlert_NoOp", "type": "main", "index": 0 }]
+      ]
+    },
+    "Switch_AlertType": {
+      "main": [
+        [{ "node": "Telegram_Warning", "type": "main", "index": 0 }],
+        [{ "node": "Telegram_Critical_TradeMarketing", "type": "main", "index": 0 }],
+        [{ "node": "Telegram_Opportunity", "type": "main", "index": 0 }]
+      ]
+    },
+    "Telegram_Critical_TradeMarketing": {
+      "main": [
+        [{ "node": "Telegram_Critical_SalesDirector", "type": "main", "index": 0 }]
+      ]
+    },
+    "Telegram_Warning": {
+      "main": [
+        [{ "node": "Loop_Products", "type": "main", "index": 0 }]
+      ]
+    },
+    "Telegram_Critical_SalesDirector": {
+      "main": [
+        [{ "node": "Loop_Products", "type": "main", "index": 0 }]
+      ]
+    },
+    "Telegram_Opportunity": {
+      "main": [
+        [{ "node": "Loop_Products", "type": "main", "index": 0 }]
+      ]
+    },
+    "NoAlert_NoOp": {
+      "main": [
+        [{ "node": "Loop_Products", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Africa/Cairo",
+    "saveManualExecutions": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "tags": ["corona", "price-intelligence", "fmcg", "mvp"],
+  "versionId": "01-mvp-talabat-breadfast"
+}

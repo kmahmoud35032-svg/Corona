@@ -1,0 +1,327 @@
+{
+  "name": "02 — Corona Price Intelligence | Daily Report to Sales Director",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * *"
+            }
+          ]
+        }
+      },
+      "id": "report-cron-001",
+      "name": "Cron 08:00 Report",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 400],
+      "notes": "Fires at 08:00 Cairo — after the 06:00 scraper has completed. Timezone set in workflow Settings."
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $vars.PRICE_INTELLIGENCE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Price_Log",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "report-read-pricelog",
+      "name": "Read Price_Log Today",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [460, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE_WITH_GSHEETS_CREDENTIAL_ID",
+          "name": "Google Sheets — Price_Intelligence"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $vars.PRICE_INTELLIGENCE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Price_Index",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "report-read-priceindex",
+      "name": "Read Price_Index Today",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.2,
+      "position": [460, 500],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE_WITH_GSHEETS_CREDENTIAL_ID",
+          "name": "Google Sheets — Price_Intelligence"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Aggregate today's Price_Log + Price_Index data into a structured summary for the AI report.\n// This node receives Cron trigger (1 item). It reads from Price_Log and Price_Index via\n// static data set earlier — or re-reads the passed items.\n\n// Since this is a separate workflow (fires at 08:00), we read both sheets independently.\n// The Cron trigger output[0] goes to both Read nodes via split.\n// We use $getWorkflowStaticData to merge them after both reads.\n// NOTE: Because of the dual-read architecture, this code node is called AFTER both reads\n// have completed and merged. See connections: both reads feed into a Merge node, then here.\n\nconst allItems = $input.all();\nconst today = new Date().toISOString().split('T')[0];\n\n// Separate Price_Log vs Price_Index rows by checking which fields exist\nconst priceLogRows   = allItems.map(i => i.json).filter(r => r.Platform && r.Raw_Product_Name);\nconst priceIndexRows = allItems.map(i => i.json).filter(r => r.Index_Percent !== undefined);\n\n// ── Filter to TODAY only ──────────────────────────────\nconst todayLog   = priceLogRows.filter(r => r.Date === today);\nconst todayIndex = priceIndexRows.filter(r => r.Date === today);\n\nif (todayLog.length === 0) {\n  return [{ json: {\n    _no_data: true,\n    summary: `No Price_Log data found for today (${today}). Scraper may not have run yet.`,\n    today\n  }}];\n}\n\n// ── Build aggregates ──────────────────────────────────\nconst platforms   = [...new Set(todayLog.map(r => r.Platform))];\nconst totalSKUs   = todayLog.length;\nconst ourSKUs     = todayLog.filter(r => r.Is_Ours === true || r.Is_Ours === 'TRUE');\nconst competitorSKUs = todayLog.filter(r => !ourSKUs.includes(r));\n\n// OOS analysis\nconst ourOOS      = ourSKUs.filter(r => r.In_Stock === false || r.In_Stock === 'FALSE');\nconst competitorOOS = competitorSKUs.filter(r => r.In_Stock === false || r.In_Stock === 'FALSE');\nconst persistentOOS = ourOOS.filter(r => r.First_Seen_OOS &&\n  (Date.now() - new Date(r.First_Seen_OOS)) / 36e5 > 48);\n\n// Promotions active today\nconst activePromos = todayLog.filter(r => r.Promo_Type && r.Promo_Type !== 'None');\n\n// Price Index highlights (top 3 deviations from 100)\nconst indexHighlights = todayIndex\n  .filter(r => r.Index_Percent)\n  .sort((a, b) => Math.abs(100 - b.Index_Percent) - Math.abs(100 - a.Index_Percent))\n  .slice(0, 5);\n\n// ── Build data summary for AI ──────────────────────────\nconst summary = {\n  report_date: today,\n  platforms_monitored: platforms,\n  totals: {\n    products_tracked: totalSKUs,\n    corona_products: ourSKUs.length,\n    competitor_products: competitorSKUs.length\n  },\n  oos_summary: {\n    corona_oos: ourOOS.map(r => ({ sku: r.Matched_SKU, platform: r.Platform, since: r.First_Seen_OOS, category: r.Category })),\n    competitor_oos: competitorOOS.map(r => ({ brand: r.Brand, product: r.Raw_Product_Name, platform: r.Platform, category: r.Category })),\n    critical_persistent_oos: persistentOOS.map(r => ({ sku: r.Matched_SKU, platform: r.Platform, since: r.First_Seen_OOS, hours: Math.round((Date.now() - new Date(r.First_Seen_OOS)) / 36e5) }))\n  },\n  promotions: activePromos.map(r => ({ brand: r.Brand, product: r.Raw_Product_Name, platform: r.Platform, promo_type: r.Promo_Type, discount: r.Discount_Percent, current_price: r.Price_EGP, original_price: r.Original_Price_EGP })),\n  price_index_highlights: indexHighlights.map(r => ({ sku: r.SKU, platform: r.Platform, category: r.Category, our_price: r.Our_Price, competitor_price: r.Competitor_Price, competitor_brand: r.Competitor_Brand, index_percent: r.Index_Percent }))\n};\n\nreturn [{ json: { summary_json: JSON.stringify(summary, null, 2), today, _no_data: false } }];"
+      },
+      "id": "code-aggregate-report",
+      "name": "Code_AggregateForReport",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 400]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            {
+              "id": "no-data-check",
+              "leftValue": "={{ $json._no_data }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "if-no-data",
+      "name": "IF_NoData",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [1100, 400]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $vars.TELEGRAM_SALES_DIRECTOR_CHAT_ID }}",
+        "text": "=⚠️ <b>Corona Digital Shelf — No Data Alert</b>\n\nDate: {{ $json.today }}\n{{ $json.summary }}\n\n<i>Please check if the 06:00 scraper ran successfully.</i>",
+        "additionalFields": { "parse_mode": "HTML" }
+      },
+      "id": "telegram-no-data",
+      "name": "Telegram_NoData_Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1320, 260],
+      "credentials": {
+        "telegramApi": {
+          "id": "REPLACE_WITH_TELEGRAM_CREDENTIAL_ID",
+          "name": "Telegram Bot — Corona Alerts"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {
+          "temperature": 0.3,
+          "maxTokens": 1200
+        }
+      },
+      "id": "report-groq-llm",
+      "name": "Groq_LLM_Report",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [1540, 600],
+      "credentials": {
+        "groqApi": {
+          "id": "JQCBvOC9oeYkiJ7I",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.summary_json }}",
+        "options": {
+          "systemMessage": "You are a Sales Intelligence Analyst for Corona Chocolate S.A.E., one of Egypt's largest chocolate and confectionery manufacturers.\n\nYour task: Write a concise, action-oriented daily digital shelf intelligence report for the Sales Director based on today's e-commerce monitoring data.\n\nReport format (use exactly this structure, in English with Arabic product names preserved):\n\n📊 CORONA DIGITAL SHELF REPORT — {date}\n\n🔑 EXECUTIVE SUMMARY\n3-sentence snapshot of the most important findings today.\n\n📉 OUR SKUs — AVAILABILITY STATUS\n• List any Corona SKUs that are Out of Stock with platform, duration, and urgency level\n• If all in stock: '✅ All monitored Corona SKUs are in stock across all platforms'\n\n🚨 CRITICAL ACTIONS REQUIRED (if any)\n• Bullet any OOS > 48h with recommended immediate action\n\n🟢 COMPETITOR OPPORTUNITIES\n• List competitor SKUs that are OOS — include recommended push action\n• If none: 'No competitor OOS opportunities today'\n\n💰 PRICE INDEX SNAPSHOT\n• Top 3 price index observations (competitor price vs. our price)\n• Format: [Competitor Brand] [Product] on [Platform] = [X]% of our price → [above/below/at parity]\n\n🏷️ ACTIVE PROMOTIONS TODAY\n• List all promotions running on tracked SKUs\n• If none: 'No promotions detected today'\n\n📈 TREND NOTE (1 sentence)\nAny notable pattern vs. yesterday if detectable.\n\n---\nKeep total length under 450 words. Be specific with numbers. Use the brand names exactly as they appear in the data."
+        }
+      },
+      "id": "ai-generate-report",
+      "name": "AI_GenerateReport",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [1540, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format the AI-generated report for Telegram (4096 char limit per message)\n// Split into multiple messages if needed.\n\nconst rawReport = $json.output || $json.text || 'Report generation failed.';\nconst today = new Date().toLocaleString('ar-EG', { timeZone: 'Africa/Cairo', dateStyle: 'full' });\n\n// Telegram max message size is 4096 chars. Split if over limit.\nconst MAX_LENGTH = 4000;\n\nif (rawReport.length <= MAX_LENGTH) {\n  return [{ json: {\n    message_1: rawReport,\n    message_count: 1,\n    date_ar: today\n  }}];\n}\n\n// Split at paragraph boundaries\nconst parts = [];\nlet remaining = rawReport;\nwhile (remaining.length > MAX_LENGTH) {\n  const splitAt = remaining.lastIndexOf('\\n\\n', MAX_LENGTH);\n  const cutAt = splitAt > 0 ? splitAt : MAX_LENGTH;\n  parts.push(remaining.substring(0, cutAt).trim());\n  remaining = remaining.substring(cutAt).trim();\n}\nif (remaining) parts.push(remaining);\n\nconst result = { message_count: parts.length, date_ar: today };\nparts.forEach((p, i) => { result[`message_${i + 1}`] = p; });\n\nreturn [{ json: result }];"
+      },
+      "id": "code-format-report",
+      "name": "Code_FormatReport",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1760, 400]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $vars.TELEGRAM_SALES_DIRECTOR_CHAT_ID }}",
+        "text": "={{ $json.message_1 }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram-report-part1",
+      "name": "Telegram_Report_Part1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1980, 400],
+      "credentials": {
+        "telegramApi": {
+          "id": "REPLACE_WITH_TELEGRAM_CREDENTIAL_ID",
+          "name": "Telegram Bot — Corona Alerts"
+        }
+      },
+      "notes": "Sends daily report to Sales Director. If report is >4000 chars, also send Part 2 (connect to Telegram_Report_Part2 with an IF node checking message_count > 1)."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            {
+              "id": "multi-message-check",
+              "leftValue": "={{ $json.message_count }}",
+              "rightValue": 1,
+              "operator": { "type": "number", "operation": "gt" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "if-multi-message",
+      "name": "IF_MultiMessage",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [2200, 400]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $vars.TELEGRAM_SALES_DIRECTOR_CHAT_ID }}",
+        "text": "={{ $json.message_2 }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram-report-part2",
+      "name": "Telegram_Report_Part2",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [2420, 260],
+      "credentials": {
+        "telegramApi": {
+          "id": "REPLACE_WITH_TELEGRAM_CREDENTIAL_ID",
+          "name": "Telegram Bot — Corona Alerts"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "report-done-noop",
+      "name": "Report_Done",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [2420, 540]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "id": "merge-reads",
+      "name": "Merge_SheetReads",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [700, 400],
+      "notes": "Combines Price_Log and Price_Index rows into one stream for the aggregation code node."
+    }
+  ],
+  "connections": {
+    "Cron 08:00 Report": {
+      "main": [
+        [
+          { "node": "Read Price_Log Today", "type": "main", "index": 0 },
+          { "node": "Read Price_Index Today", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Read Price_Log Today": {
+      "main": [
+        [{ "node": "Merge_SheetReads", "type": "main", "index": 0 }]
+      ]
+    },
+    "Read Price_Index Today": {
+      "main": [
+        [{ "node": "Merge_SheetReads", "type": "main", "index": 1 }]
+      ]
+    },
+    "Merge_SheetReads": {
+      "main": [
+        [{ "node": "Code_AggregateForReport", "type": "main", "index": 0 }]
+      ]
+    },
+    "Code_AggregateForReport": {
+      "main": [
+        [{ "node": "IF_NoData", "type": "main", "index": 0 }]
+      ]
+    },
+    "IF_NoData": {
+      "main": [
+        [{ "node": "Telegram_NoData_Alert", "type": "main", "index": 0 }],
+        [{ "node": "AI_GenerateReport", "type": "main", "index": 0 }]
+      ]
+    },
+    "Groq_LLM_Report": {
+      "ai_languageModel": [
+        [{ "node": "AI_GenerateReport", "type": "ai_languageModel", "index": 0 }]
+      ]
+    },
+    "AI_GenerateReport": {
+      "main": [
+        [{ "node": "Code_FormatReport", "type": "main", "index": 0 }]
+      ]
+    },
+    "Code_FormatReport": {
+      "main": [
+        [{ "node": "Telegram_Report_Part1", "type": "main", "index": 0 }]
+      ]
+    },
+    "Telegram_Report_Part1": {
+      "main": [
+        [{ "node": "IF_MultiMessage", "type": "main", "index": 0 }]
+      ]
+    },
+    "IF_MultiMessage": {
+      "main": [
+        [{ "node": "Telegram_Report_Part2", "type": "main", "index": 0 }],
+        [{ "node": "Report_Done", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Africa/Cairo",
+    "saveManualExecutions": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "tags": ["corona", "price-intelligence", "fmcg", "daily-report"],
+  "versionId": "02-daily-report-v1"
+}
