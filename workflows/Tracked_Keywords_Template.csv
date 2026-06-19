@@ -1,0 +1,158 @@
+Keyword,Our_SKU,Brand,Category,Is_Ours,Platform,Priority
+corona bimbo stick,FGBSBCM01,Corona,Bimbo,TRUE,Talabat,Daily
+corona bimbo stick,FGBSBCM01,Corona,Bimbo,TRUE,Breadfast,Daily
+corona bimbo stick,FGBSBCM01,Corona,Bimbo,TRUE,Rabbit,Daily
+corona bimbo stick,FGBSBCM01,Corona,Bimbo,TRUE,Noon,3x/week
+corona bimbo stick,FGBSBCM01,Corona,Bimbo,TRUE,Carrefour,3x/week
+corona bimbo stick,FGBSBCM01,Corona,Bimbo,TRUE,Amazon,3x/week
+corona bimbo stick,FGBSBCM01,Corona,Bimbo,TRUE,Jumia,Weekly
+corona bimbo stick,FGBSBCM01,Corona,Bimbo,TRUE,InstaShop,Weekly
+corona bimbo chocolate cake,FGBSBCM02,Corona,Bimbo,TRUE,Talabat,Daily
+corona bimbo chocolate cake,FGBSBCM02,Corona,Bimbo,TRUE,Breadfast,Daily
+corona bimbo chocolate cake,FGBSBCM02,Corona,Bimbo,TRUE,Rabbit,Daily
+corona bimbo chocolate cake,FGBSBCM02,Corona,Bimbo,TRUE,Noon,3x/week
+corona bimbo chocolate cake,FGBSBCM02,Corona,Bimbo,TRUE,Carrefour,3x/week
+corona bimbo chocolate cake,FGBSBCM02,Corona,Bimbo,TRUE,Amazon,3x/week
+corona bimbo double,FGBSBCM03,Corona,Bimbo,TRUE,Talabat,Daily
+corona bimbo double,FGBSBCM03,Corona,Bimbo,TRUE,Breadfast,Daily
+corona bimbo double,FGBSBCM03,Corona,Bimbo,TRUE,Rabbit,Daily
+corona bimbo double,FGBSBCM03,Corona,Bimbo,TRUE,Noon,3x/week
+corona bimbo double,FGBSBCM03,Corona,Bimbo,TRUE,Carrefour,3x/week
+hohos king chocolate,COMP-HOHOS-01,Edita,Bimbo,FALSE,Talabat,Daily
+hohos king chocolate,COMP-HOHOS-01,Edita,Bimbo,FALSE,Breadfast,Daily
+hohos king chocolate,COMP-HOHOS-01,Edita,Bimbo,FALSE,Rabbit,Daily
+hohos king chocolate,COMP-HOHOS-01,Edita,Bimbo,FALSE,Noon,3x/week
+hohos king chocolate,COMP-HOHOS-01,Edita,Bimbo,FALSE,Carrefour,3x/week
+todo chocolate brownie cake,COMP-TODO-01,Edita,Bimbo,FALSE,Talabat,Daily
+todo chocolate brownie cake,COMP-TODO-01,Edita,Bimbo,FALSE,Breadfast,Daily
+todo chocolate brownie cake,COMP-TODO-01,Edita,Bimbo,FALSE,Rabbit,Daily
+todo chocolate brownie cake,COMP-TODO-01,Edita,Bimbo,FALSE,Carrefour,3x/week
+tiger tail edita,COMP-TIGER-01,Edita,Bimbo,FALSE,Talabat,Daily
+tiger tail edita,COMP-TIGER-01,Edita,Bimbo,FALSE,Breadfast,Daily
+tiger tail edita,COMP-TIGER-01,Edita,Bimbo,FALSE,Carrefour,3x/week
+katakito chocolate,COMP-KTKTO-01,Edita,Bimbo,FALSE,Talabat,Daily
+katakito chocolate,COMP-KTKTO-01,Edita,Bimbo,FALSE,Breadfast,Daily
+katakito chocolate,COMP-KTKTO-01,Edita,Bimbo,FALSE,Rabbit,Daily
+corona chocolate bar dark,FGCHBD01,Corona,Chocolate Bars,TRUE,Talabat,Daily
+corona chocolate bar dark,FGCHBD01,Corona,Chocolate Bars,TRUE,Breadfast,Daily
+corona chocolate bar dark,FGCHBD01,Corona,Chocolate Bars,TRUE,Rabbit,Daily
+corona chocolate bar dark,FGCHBD01,Corona,Chocolate Bars,TRUE,Noon,3x/week
+corona chocolate bar dark,FGCHBD01,Corona,Chocolate Bars,TRUE,Carrefour,3x/week
+corona chocolate bar dark,FGCHBD01,Corona,Chocolate Bars,TRUE,Amazon,3x/week
+corona chocolate bar dark,FGCHBD01,Corona,Chocolate Bars,TRUE,Spinneys,Weekly
+corona chocolate bar dark,FGCHBD01,Corona,Chocolate Bars,TRUE,Gourmet,Weekly
+corona chocolate bar milk,FGCHBM01,Corona,Chocolate Bars,TRUE,Talabat,Daily
+corona chocolate bar milk,FGCHBM01,Corona,Chocolate Bars,TRUE,Breadfast,Daily
+corona chocolate bar milk,FGCHBM01,Corona,Chocolate Bars,TRUE,Rabbit,Daily
+corona chocolate bar milk,FGCHBM01,Corona,Chocolate Bars,TRUE,Noon,3x/week
+corona chocolate bar milk,FGCHBM01,Corona,Chocolate Bars,TRUE,Carrefour,3x/week
+corona chocolate bar milk,FGCHBM01,Corona,Chocolate Bars,TRUE,Amazon,3x/week
+corona chocolate bar milk,FGCHBM01,Corona,Chocolate Bars,TRUE,Spinneys,Weekly
+corona tablet white chocolate,FGCHBW01,Corona,Chocolate Bars,TRUE,Talabat,Daily
+corona tablet white chocolate,FGCHBW01,Corona,Chocolate Bars,TRUE,Breadfast,Daily
+corona tablet white chocolate,FGCHBW01,Corona,Chocolate Bars,TRUE,Carrefour,3x/week
+corona tablet white chocolate,FGCHBW01,Corona,Chocolate Bars,TRUE,Noon,3x/week
+cadbury dairy milk,COMP-CDM-200,Cadbury,Chocolate Bars,FALSE,Talabat,Daily
+cadbury dairy milk,COMP-CDM-200,Cadbury,Chocolate Bars,FALSE,Breadfast,Daily
+cadbury dairy milk,COMP-CDM-200,Cadbury,Chocolate Bars,FALSE,Rabbit,Daily
+cadbury dairy milk,COMP-CDM-200,Cadbury,Chocolate Bars,FALSE,Noon,3x/week
+cadbury dairy milk,COMP-CDM-200,Cadbury,Chocolate Bars,FALSE,Carrefour,3x/week
+cadbury dairy milk,COMP-CDM-200,Cadbury,Chocolate Bars,FALSE,Amazon,3x/week
+cadbury dairy milk,COMP-CDM-200,Cadbury,Chocolate Bars,FALSE,Jumia,Weekly
+cadbury dairy milk,COMP-CDM-200,Cadbury,Chocolate Bars,FALSE,Spinneys,Weekly
+galaxy chocolate,COMP-GAL-01,Galaxy,Chocolate Bars,FALSE,Talabat,Daily
+galaxy chocolate,COMP-GAL-01,Galaxy,Chocolate Bars,FALSE,Breadfast,Daily
+galaxy chocolate,COMP-GAL-01,Galaxy,Chocolate Bars,FALSE,Rabbit,Daily
+galaxy chocolate,COMP-GAL-01,Galaxy,Chocolate Bars,FALSE,Noon,3x/week
+galaxy chocolate,COMP-GAL-01,Galaxy,Chocolate Bars,FALSE,Carrefour,3x/week
+galaxy chocolate,COMP-GAL-01,Galaxy,Chocolate Bars,FALSE,Amazon,3x/week
+galaxy chocolate,COMP-GAL-01,Galaxy,Chocolate Bars,FALSE,Jumia,Weekly
+kitkat chocolate,COMP-KKT-01,KitKat,Chocolate Bars,FALSE,Talabat,Daily
+kitkat chocolate,COMP-KKT-01,KitKat,Chocolate Bars,FALSE,Breadfast,Daily
+kitkat chocolate,COMP-KKT-01,KitKat,Chocolate Bars,FALSE,Rabbit,Daily
+kitkat chocolate,COMP-KKT-01,KitKat,Chocolate Bars,FALSE,Noon,3x/week
+kitkat chocolate,COMP-KKT-01,KitKat,Chocolate Bars,FALSE,Carrefour,3x/week
+kitkat chocolate,COMP-KKT-01,KitKat,Chocolate Bars,FALSE,Amazon,3x/week
+kinder bueno,COMP-KNDR-01,Kinder,Chocolate Bars,FALSE,Talabat,Daily
+kinder bueno,COMP-KNDR-01,Kinder,Chocolate Bars,FALSE,Breadfast,Daily
+kinder bueno,COMP-KNDR-01,Kinder,Chocolate Bars,FALSE,Carrefour,3x/week
+kinder bueno,COMP-KNDR-01,Kinder,Chocolate Bars,FALSE,Spinneys,Weekly
+ritter sport chocolate,COMP-RTTR-01,Ritter Sport,Chocolate Bars,FALSE,Talabat,Daily
+ritter sport chocolate,COMP-RTTR-01,Ritter Sport,Chocolate Bars,FALSE,Spinneys,Weekly
+ritter sport chocolate,COMP-RTTR-01,Ritter Sport,Chocolate Bars,FALSE,Gourmet,Weekly
+milka chocolate,COMP-MLK-01,Milka,Chocolate Bars,FALSE,Talabat,Daily
+milka chocolate,COMP-MLK-01,Milka,Chocolate Bars,FALSE,Carrefour,3x/week
+milka chocolate,COMP-MLK-01,Milka,Chocolate Bars,FALSE,Spinneys,Weekly
+snickers,COMP-SNIK-01,Mars,Chocolate Bars,FALSE,Talabat,Daily
+snickers,COMP-SNIK-01,Mars,Chocolate Bars,FALSE,Breadfast,Daily
+snickers,COMP-SNIK-01,Mars,Chocolate Bars,FALSE,Rabbit,Daily
+snickers,COMP-SNIK-01,Mars,Chocolate Bars,FALSE,Carrefour,3x/week
+twix chocolate,COMP-TWIX-01,Mars,Chocolate Bars,FALSE,Talabat,Daily
+twix chocolate,COMP-TWIX-01,Mars,Chocolate Bars,FALSE,Breadfast,Daily
+twix chocolate,COMP-TWIX-01,Mars,Chocolate Bars,FALSE,Carrefour,3x/week
+bounty chocolate,COMP-BNTY-01,Mars,Chocolate Bars,FALSE,Talabat,Daily
+bounty chocolate,COMP-BNTY-01,Mars,Chocolate Bars,FALSE,Carrefour,3x/week
+corona wafer chocolate,FGWFCH01,Corona,Wafer,TRUE,Talabat,Daily
+corona wafer chocolate,FGWFCH01,Corona,Wafer,TRUE,Breadfast,Daily
+corona wafer chocolate,FGWFCH01,Corona,Wafer,TRUE,Rabbit,Daily
+corona wafer chocolate,FGWFCH01,Corona,Wafer,TRUE,Noon,3x/week
+corona wafer chocolate,FGWFCH01,Corona,Wafer,TRUE,Carrefour,3x/week
+corona wafer vanilla,FGWFVN01,Corona,Wafer,TRUE,Talabat,Daily
+corona wafer vanilla,FGWFVN01,Corona,Wafer,TRUE,Breadfast,Daily
+corona wafer vanilla,FGWFVN01,Corona,Wafer,TRUE,Carrefour,3x/week
+bisco misr wafer,COMP-BSCO-01,Bisco Misr,Wafer,FALSE,Talabat,Daily
+bisco misr wafer,COMP-BSCO-01,Bisco Misr,Wafer,FALSE,Breadfast,Daily
+bisco misr wafer,COMP-BSCO-01,Bisco Misr,Wafer,FALSE,Rabbit,Daily
+bisco misr wafer,COMP-BSCO-01,Bisco Misr,Wafer,FALSE,Carrefour,3x/week
+bisco cocoa lovers,COMP-BSCO-02,Bisco Misr,Wafer,FALSE,Talabat,Daily
+bisco cocoa lovers,COMP-BSCO-02,Bisco Misr,Wafer,FALSE,Breadfast,Daily
+bisco cocoa lovers,COMP-BSCO-02,Bisco Misr,Wafer,FALSE,Carrefour,3x/week
+loacker wafer,COMP-LCKR-01,Loacker,Wafer,FALSE,Talabat,Daily
+loacker wafer,COMP-LCKR-01,Loacker,Wafer,FALSE,Spinneys,Weekly
+loacker wafer,COMP-LCKR-01,Loacker,Wafer,FALSE,Gourmet,Weekly
+el shamadan wafer,COMP-SHMD-01,El Shamadan,Wafer,FALSE,Talabat,Daily
+el shamadan wafer,COMP-SHMD-01,El Shamadan,Wafer,FALSE,Breadfast,Daily
+mandolin wafer,COMP-MNDL-01,Mandolin,Wafer,FALSE,Talabat,Daily
+mandolin wafer,COMP-MNDL-01,Mandolin,Wafer,FALSE,Breadfast,Daily
+corona cocoa powder,FGCOCO01,Corona,Cocoa,TRUE,Talabat,Daily
+corona cocoa powder,FGCOCO01,Corona,Cocoa,TRUE,Breadfast,Daily
+corona cocoa powder,FGCOCO01,Corona,Cocoa,TRUE,Rabbit,Daily
+corona cocoa powder,FGCOCO01,Corona,Cocoa,TRUE,Noon,3x/week
+corona cocoa powder,FGCOCO01,Corona,Cocoa,TRUE,Carrefour,3x/week
+corona cocoa powder,FGCOCO01,Corona,Cocoa,TRUE,Amazon,3x/week
+corona cocoa powder,FGCOCO01,Corona,Cocoa,TRUE,Jumia,Weekly
+corona cocoa mix,FGCOCM01,Corona,Cocoa,TRUE,Talabat,Daily
+corona cocoa mix,FGCOCM01,Corona,Cocoa,TRUE,Breadfast,Daily
+corona cocoa mix,FGCOCM01,Corona,Cocoa,TRUE,Rabbit,Daily
+corona cocoa mix,FGCOCM01,Corona,Cocoa,TRUE,Carrefour,3x/week
+nestle nesquik,COMP-NQIK-01,Nestle,Cocoa,FALSE,Talabat,Daily
+nestle nesquik,COMP-NQIK-01,Nestle,Cocoa,FALSE,Breadfast,Daily
+nestle nesquik,COMP-NQIK-01,Nestle,Cocoa,FALSE,Rabbit,Daily
+nestle nesquik,COMP-NQIK-01,Nestle,Cocoa,FALSE,Noon,3x/week
+nestle nesquik,COMP-NQIK-01,Nestle,Cocoa,FALSE,Carrefour,3x/week
+nestle nesquik,COMP-NQIK-01,Nestle,Cocoa,FALSE,Amazon,3x/week
+cafe o 3in1 sachet,COMP-CAFO-01,Cafe O,Cocoa,FALSE,Talabat,Daily
+cafe o 3in1 sachet,COMP-CAFO-01,Cafe O,Cocoa,FALSE,Breadfast,Daily
+cafe o 3in1 sachet,COMP-CAFO-01,Cafe O,Cocoa,FALSE,Carrefour,3x/week
+corona candy assorted,FGCNDY01,Corona,Candy,TRUE,Talabat,Daily
+corona candy assorted,FGCNDY01,Corona,Candy,TRUE,Breadfast,Daily
+corona candy assorted,FGCNDY01,Corona,Candy,TRUE,Rabbit,Daily
+corona candy assorted,FGCNDY01,Corona,Candy,TRUE,Noon,3x/week
+corona candy assorted,FGCNDY01,Corona,Candy,TRUE,Carrefour,3x/week
+corona gummy candy,FGCNDG01,Corona,Candy,TRUE,Talabat,Daily
+corona gummy candy,FGCNDG01,Corona,Candy,TRUE,Breadfast,Daily
+corona gummy candy,FGCNDG01,Corona,Candy,TRUE,Carrefour,3x/week
+haribo gummy bears,COMP-HRBO-01,Haribo,Candy,FALSE,Talabat,Daily
+haribo gummy bears,COMP-HRBO-01,Haribo,Candy,FALSE,Breadfast,Daily
+haribo gummy bears,COMP-HRBO-01,Haribo,Candy,FALSE,Rabbit,Daily
+haribo gummy bears,COMP-HRBO-01,Haribo,Candy,FALSE,Noon,3x/week
+haribo gummy bears,COMP-HRBO-01,Haribo,Candy,FALSE,Carrefour,3x/week
+bebeto gummy candy,COMP-BBTO-01,Bebeto,Candy,FALSE,Talabat,Daily
+bebeto gummy candy,COMP-BBTO-01,Bebeto,Candy,FALSE,Breadfast,Daily
+bebeto gummy candy,COMP-BBTO-01,Bebeto,Candy,FALSE,Carrefour,3x/week
+yupi candy,COMP-YUPI-01,Yupi,Candy,FALSE,Talabat,Daily
+yupi candy,COMP-YUPI-01,Yupi,Candy,FALSE,Breadfast,Daily
+trolli gummy,COMP-TROL-01,Trolli,Candy,FALSE,Talabat,Daily
+trolli gummy,COMP-TROL-01,Trolli,Candy,FALSE,Carrefour,3x/week
+vidal candy,COMP-VDAL-01,Vidal,Candy,FALSE,Talabat,Daily
+vidal candy,COMP-VDAL-01,Vidal,Candy,FALSE,Carrefour,3x/week

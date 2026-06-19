@@ -1,0 +1,640 @@
+{
+  "name": "Corona Digital Shelf Intelligence - Main",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 4 * * 0,1,2,3,4,6"
+            }
+          ]
+        },
+        "options": {
+          "timezone": "Africa/Cairo"
+        }
+      },
+      "id": "a1b2c3d4-0001-0001-0001-000000000001",
+      "name": "Daily 06:00 Cairo",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [140, 400],
+      "notes": "Runs Mon–Thu + Sat–Sun. 04:00 UTC = 06:00 Cairo EET+2. Covers: Talabat, Breadfast, Rabbit, Noon, Jumia, Carrefour, Amazon, InstaShop, Spinneys, Gourmet Egypt"
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "PASTE_YOUR_GOOGLE_SHEET_ID_HERE",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Tracked_Keywords",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "a1b2c3d4-0002-0002-0002-000000000002",
+      "name": "Read Tracked_Keywords",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [360, 400],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "name": "Google Sheets account"
+        }
+      },
+      "notes": "Columns: Keyword | Our_SKU | Brand | Category | Is_Ours | Platform | Priority (Daily/3x/Weekly)"
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "a1b2c3d4-0003-0003-0003-000000000003",
+      "name": "Loop Over Keywords",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [580, 400]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "rules": [
+            { "value": "Talabat" },
+            { "value": "Breadfast" },
+            { "value": "Rabbit" },
+            { "value": "Noon" },
+            { "value": "Jumia" },
+            { "value": "Carrefour" },
+            { "value": "Amazon" },
+            { "value": "InstaShop" },
+            { "value": "Spinneys" },
+            { "value": "Gourmet" }
+          ]
+        },
+        "fallbackOutput": "none",
+        "options": {}
+      },
+      "id": "a1b2c3d4-0004-0004-0004-000000000004",
+      "name": "Switch Platform",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [800, 400],
+      "notes": "10 platforms: Priority 1 (Daily) = Talabat + Breadfast + Rabbit | Priority 2 (3x/week) = Carrefour + Amazon + Noon | Priority 3 (Weekly) = Jumia + InstaShop + Spinneys + Gourmet"
+    },
+
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.talabat.com/v2/stores/TALABAT_STORE_ID/products/search?q={{ encodeURIComponent($json.Keyword) }}&language=en",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Accept", "value": "application/json" },
+            { "name": "X-Platform", "value": "web" },
+            { "name": "User-Agent", "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" }
+          ]
+        },
+        "options": { "timeout": 15000 }
+      },
+      "id": "a1b2c3d4-0005-0005-0005-000000000005",
+      "name": "HTTP - Talabat",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1020, 60],
+      "notes": "PHASE 1: Replace URL with endpoint from DevTools on talabat.com/egypt/grocery — Network > XHR > search. 4.7M weekly active users."
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.breadfast.com/v2/products/search?query={{ encodeURIComponent($json.Keyword) }}&city=cairo",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Accept", "value": "application/json" },
+            { "name": "User-Agent", "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" }
+          ]
+        },
+        "options": { "timeout": 15000 }
+      },
+      "id": "a1b2c3d4-0006-0006-0006-000000000006",
+      "name": "HTTP - Breadfast",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1020, 180],
+      "notes": "PHASE 1: Replace URL from DevTools on breadfast.com. 613K weekly active users. Covers Cairo + Giza + Alex + Mansoura."
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.rabbit.com.eg/v1/products/search?q={{ encodeURIComponent($json.Keyword) }}&zone=cairo",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Accept", "value": "application/json" },
+            { "name": "User-Agent", "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" }
+          ]
+        },
+        "options": { "timeout": 15000 }
+      },
+      "id": "a1b2c3d4-0007-0007-0007-000000000007",
+      "name": "HTTP - Rabbit",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1020, 300],
+      "notes": "PHASE 1: Capture from rabbit.com.eg via DevTools. 20-min delivery. 1.4M customers. Fast-growing — Priority 1 daily."
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.noon.com/catalog/v3/search/?q={{ encodeURIComponent($json.Keyword) }}&limit=20&country=eg&lang=en",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Accept", "value": "application/json" },
+            { "name": "x-noon-country", "value": "EG" },
+            { "name": "User-Agent", "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" }
+          ]
+        },
+        "options": { "timeout": 15000 }
+      },
+      "id": "a1b2c3d4-0008-0008-0008-000000000008",
+      "name": "HTTP - Noon",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1020, 420],
+      "notes": "PHASE 2: Noon Egypt — 8% market share. Cadbury + KitKat + Galaxy confirmed. Frequency: 3x/week."
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://www.jumia.com.eg/catalog/?q={{ encodeURIComponent($json.Keyword) }}&c=1235",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Accept", "value": "application/json" },
+            { "name": "User-Agent", "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" }
+          ]
+        },
+        "options": { "timeout": 20000 }
+      },
+      "id": "a1b2c3d4-0009-0009-0009-000000000009",
+      "name": "HTTP - Jumia",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1020, 540],
+      "notes": "PHASE 2: Jumia Egypt — 19% market share, 12M users. Candy & Chocolate category = c=1235. Frequency: weekly. May need ScraperAPI."
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.scraperapi.com?api_key={{ $env.SCRAPERAPI_KEY }}&url={{ encodeURIComponent('https://www.carrefouregypt.com/mafegy/en/search?text=' + $json.Keyword) }}&country_code=eg",
+        "options": { "timeout": 30000 }
+      },
+      "id": "a1b2c3d4-0010-0010-0010-000000000010",
+      "name": "HTTP - Carrefour",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1020, 660],
+      "notes": "PHASE 4: Carrefour Egypt via ScraperAPI or self-hosted Playwright. 35% YoY growth. Frequency: 3x/week."
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.scraperapi.com?api_key={{ $env.SCRAPERAPI_KEY }}&url={{ encodeURIComponent('https://www.amazon.eg/s?k=' + $json.Keyword) }}&country_code=eg",
+        "options": { "timeout": 30000 }
+      },
+      "id": "a1b2c3d4-0011-0011-0011-000000000011",
+      "name": "HTTP - Amazon",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1020, 780],
+      "notes": "PHASE 4: Amazon Egypt via ScraperAPI. Cap at 30 SKUs, 3x/week max (≈360 req/month within free tier). Cadbury + Galaxy + KitKat confirmed."
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.talabat.com/v2/instashop/search?q={{ encodeURIComponent($json.Keyword) }}&country=eg",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Accept", "value": "application/json" },
+            { "name": "User-Agent", "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" }
+          ]
+        },
+        "options": { "timeout": 15000 }
+      },
+      "id": "a1b2c3d4-0012-0012-0012-000000000012",
+      "name": "HTTP - InstaShop",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1020, 900],
+      "notes": "PHASE 2: InstaShop acquired by Talabat (March 2026). Routes via Talabat API. 621K active users. Delivers from Metro, Alfa Market, Ragab Sons, Kheir Zaman."
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.scraperapi.com?api_key={{ $env.SCRAPERAPI_KEY }}&url={{ encodeURIComponent('https://spinneys-egypt.com/en/search?q=' + $json.Keyword) }}&country_code=eg",
+        "options": { "timeout": 30000 }
+      },
+      "id": "a1b2c3d4-0013-0013-0013-000000000013",
+      "name": "HTTP - Spinneys",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1020, 1020],
+      "notes": "PHASE 4: Spinneys Egypt — premium supermarket. Carries imported chocolate (Cadbury, Galaxy, Kinder). Frequency: weekly."
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.scraperapi.com?api_key={{ $env.SCRAPERAPI_KEY }}&url={{ encodeURIComponent('https://gourmetegypt.com/search?q=' + $json.Keyword) }}&country_code=eg",
+        "options": { "timeout": 30000 }
+      },
+      "id": "a1b2c3d4-0014-0014-0014-000000000014",
+      "name": "HTTP - Gourmet Egypt",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1020, 1140],
+      "notes": "PHASE 4: Gourmet Egypt — premium/organic. Same-day delivery. Chocolate & sweets section confirmed. Frequency: weekly."
+    },
+
+    {
+      "parameters": {
+        "jsCode": "// ─── UNIVERSAL RAW RESPONSE PARSER ────────────────────────────────────\n// Normalises HTTP responses from all 10 platforms into a consistent shape.\n\nconst keyword  = $('Loop Over Keywords').item.json;\nconst platform = keyword.Platform || 'Unknown';\nconst raw      = $json;\n\nlet products = [];\n\ntry {\n  // ── TALABAT ────────────────────────────────────────────────────────────\n  if (platform === 'Talabat') {\n    const items = raw?.data?.products || raw?.products || raw?.items || [];\n    products = items.map(p => ({\n      raw_name        : p.name || p.title || '',\n      price_egp       : parseFloat(p.price || p.currentPrice || 0),\n      original_price  : parseFloat(p.oldPrice || p.originalPrice || 0) || null,\n      in_stock        : p.available !== false && p.inStock !== false,\n      stock_hint      : p.stockHint || null,\n      platform_item_id: String(p.id || ''),\n      image_url       : p.image || null\n    }));\n\n  // ── BREADFAST ──────────────────────────────────────────────────────────\n  } else if (platform === 'Breadfast') {\n    const items = raw?.data || raw?.products || raw?.results || [];\n    products = items.map(p => ({\n      raw_name        : p.name || p.title || '',\n      price_egp       : parseFloat(p.price || p.sellingPrice || 0),\n      original_price  : parseFloat(p.originalPrice || p.strikePrice || 0) || null,\n      in_stock        : p.stock > 0 || p.available === true,\n      stock_hint      : p.stockMessage || null,\n      platform_item_id: String(p.id || p.sku || ''),\n      image_url       : p.image || null\n    }));\n\n  // ── RABBIT ─────────────────────────────────────────────────────────────\n  } else if (platform === 'Rabbit') {\n    const items = raw?.data || raw?.products || raw?.results || [];\n    products = items.map(p => ({\n      raw_name        : p.name || p.title || p.product_name || '',\n      price_egp       : parseFloat(p.price || p.selling_price || 0),\n      original_price  : parseFloat(p.original_price || p.crossed_price || 0) || null,\n      in_stock        : p.in_stock !== false && p.available !== false,\n      stock_hint      : p.stock_status || null,\n      platform_item_id: String(p.id || p.product_id || ''),\n      image_url       : p.image || p.thumbnail || null\n    }));\n\n  // ── NOON ───────────────────────────────────────────────────────────────\n  } else if (platform === 'Noon') {\n    const items = raw?.data?.products || raw?.hits || raw?.results || [];\n    products = items.map(p => ({\n      raw_name        : p.name || p.title || '',\n      price_egp       : parseFloat(p.price?.value || p.salePrice || p.price || 0),\n      original_price  : parseFloat(p.price?.was || p.originalPrice || 0) || null,\n      in_stock        : p.inStock !== false && p.qty > 0,\n      stock_hint      : null,\n      platform_item_id: String(p.sku || p.id || ''),\n      image_url       : p.image?.default || p.image || null\n    }));\n\n  // ── JUMIA ──────────────────────────────────────────────────────────────\n  } else if (platform === 'Jumia') {\n    // Jumia returns HTML — parse basic fields\n    const html = typeof raw === 'string' ? raw : JSON.stringify(raw);\n    const nameMatches  = [...html.matchAll(/data-name=\"([^\"]+)\"/g)];\n    const priceMatches = [...html.matchAll(/data-price=\"([\\d.]+)\"/g)];\n    products = nameMatches.slice(0, 20).map((m, i) => ({\n      raw_name        : m[1],\n      price_egp       : parseFloat(priceMatches[i]?.[1] || 0),\n      original_price  : null,\n      in_stock        : true,\n      stock_hint      : null,\n      platform_item_id: `jumia-${i}`,\n      image_url       : null\n    }));\n\n  // ── CARREFOUR ──────────────────────────────────────────────────────────\n  } else if (platform === 'Carrefour') {\n    const html = typeof raw === 'string' ? raw : JSON.stringify(raw);\n    // Adapt after Playwright/ScraperAPI testing in Phase 4\n    const items = raw?.data?.products || raw?.products || [];\n    if (items.length) {\n      products = items.map(p => ({\n        raw_name        : p.name || '',\n        price_egp       : parseFloat(p.price || 0),\n        original_price  : parseFloat(p.originalPrice || 0) || null,\n        in_stock        : p.inStock !== false,\n        stock_hint      : p.stockText || null,\n        platform_item_id: String(p.id || ''),\n        image_url       : p.imageUrl || null\n      }));\n    }\n\n  // ── AMAZON ─────────────────────────────────────────────────────────────\n  } else if (platform === 'Amazon') {\n    const html = typeof raw === 'string' ? raw : JSON.stringify(raw);\n    const nameMatches  = [...html.matchAll(/class=\"a-size-medium[^\"]*\"[^>]*>([^<]+)</g)];\n    const priceMatches = [...html.matchAll(/class=\"a-price-whole\"[^>]*>([\\d,]+)</g)];\n    products = nameMatches.slice(0, 10).map((m, i) => ({\n      raw_name        : m[1].trim(),\n      price_egp       : parseFloat((priceMatches[i]?.[1] || '0').replace(',', '')),\n      original_price  : null,\n      in_stock        : true,\n      stock_hint      : null,\n      platform_item_id: `amz-${i}`,\n      image_url       : null\n    }));\n\n  // ── INSTASHOP (via Talabat API post-acquisition) ────────────────────────\n  } else if (platform === 'InstaShop') {\n    const items = raw?.data?.products || raw?.products || raw?.items || [];\n    products = items.map(p => ({\n      raw_name        : p.name || p.title || '',\n      price_egp       : parseFloat(p.price || p.currentPrice || 0),\n      original_price  : parseFloat(p.oldPrice || 0) || null,\n      in_stock        : p.available !== false,\n      stock_hint      : p.stockHint || null,\n      platform_item_id: String(p.id || ''),\n      image_url       : p.image || null\n    }));\n\n  // ── SPINNEYS ───────────────────────────────────────────────────────────\n  } else if (platform === 'Spinneys') {\n    const html = typeof raw === 'string' ? raw : JSON.stringify(raw);\n    const items = raw?.data?.products || raw?.products || [];\n    products = items.map((p, i) => ({\n      raw_name        : p.name || p.title || '',\n      price_egp       : parseFloat(p.price || 0),\n      original_price  : parseFloat(p.comparePrice || 0) || null,\n      in_stock        : p.available !== false,\n      stock_hint      : null,\n      platform_item_id: String(p.id || `spinneys-${i}`),\n      image_url       : p.image || null\n    }));\n\n  // ── GOURMET EGYPT ──────────────────────────────────────────────────────\n  } else if (platform === 'Gourmet') {\n    const items = raw?.data?.products || raw?.products || [];\n    products = items.map((p, i) => ({\n      raw_name        : p.name || p.title || '',\n      price_egp       : parseFloat(p.price || 0),\n      original_price  : parseFloat(p.compare_at_price || 0) || null,\n      in_stock        : p.available !== false,\n      stock_hint      : p.inventory_quantity ? `${p.inventory_quantity} left` : null,\n      platform_item_id: String(p.id || `gourmet-${i}`),\n      image_url       : p.featured_image || null\n    }));\n  }\n\n} catch (err) {\n  console.error(`[${platform}] Parse error:`, err.message);\n}\n\n// Attach keyword context\nreturn products.map(p => ({\n  ...p,\n  platform      : platform,\n  keyword       : keyword.Keyword,\n  our_sku       : keyword.Our_SKU,\n  brand_expected: keyword.Brand,\n  category      : keyword.Category,\n  is_ours       : keyword.Is_Ours === 'TRUE' || keyword.Is_Ours === true,\n  scrape_date   : new Date().toISOString().split('T')[0]\n}));\n"
+      },
+      "id": "a1b2c3d4-0020-0020-0020-000000000020",
+      "name": "Parse Raw Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1260, 400]
+    },
+
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a product data normalizer for an FMCG price intelligence pipeline for Corona Chocolate Egypt.\nGiven raw scraped data from an Egyptian e-commerce platform, extract ONLY valid JSON — no explanation, no markdown.\n\nExpected SKU context:\n- Keyword searched: {{ $json.keyword }}\n- Expected brand: {{ $json.brand_expected }}\n- Category: {{ $json.category }}\n- Is Corona product: {{ $json.is_ours }}\n\nRaw product data:\nName: {{ $json.raw_name }}\nPrice EGP: {{ $json.price_egp }}\nOriginal Price EGP: {{ $json.original_price }}\nIn Stock: {{ $json.in_stock }}\nStock Hint: {{ $json.stock_hint }}\nPlatform: {{ $json.platform }}\n\nReturn ONLY this JSON:\n{\n  \"brand\": \"string\",\n  \"product_name\": \"string\",\n  \"pack_size\": \"string or null\",\n  \"price_egp\": number,\n  \"original_price_egp\": \"number or null\",\n  \"promo_type\": \"Discount% | Bundle | None | null\",\n  \"discount_percent\": \"number or null\",\n  \"in_stock\": boolean,\n  \"stock_hint\": \"string or null\",\n  \"platform\": \"string\",\n  \"matched_sku\": \"best matching SKU or UNMATCHED\",\n  \"match_confidence\": \"HIGH | MEDIUM | LOW\"\n}",
+        "options": {
+          "systemMessage": "You are a precise FMCG product data normalizer for the Egyptian market. Output ONLY valid JSON. No markdown. No explanation. Map Arabic product names to English equivalents. Prices are in EGP. If you cannot match the product to the expected SKU confidently, set matched_sku to UNMATCHED and match_confidence to LOW."
+        }
+      },
+      "id": "a1b2c3d4-0021-0021-0021-000000000021",
+      "name": "Groq - Normalize Product",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [1480, 400],
+      "notes": "Groq llama-3.3-70b. Credential: JQCBvOC9oeYkiJ7I. Sub-node: Groq Chat Model below."
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {
+          "temperature": 0,
+          "maxTokens": 512
+        }
+      },
+      "id": "a1b2c3d4-0021b-0021b-0021b-00000000021b",
+      "name": "Groq Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [1480, 580],
+      "credentials": {
+        "groqApi": {
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ─── GROQ OUTPUT PARSER ────────────────────────────────────────────────\nconst agentOutput = $json.output || $json.text || '';\nconst context     = $('Parse Raw Response').item.json;\n\nlet normalized = {};\ntry {\n  const cleaned = agentOutput.replace(/```json/gi, '').replace(/```/g, '').trim();\n  normalized = JSON.parse(cleaned);\n} catch (e) {\n  normalized = {\n    brand            : context.brand_expected || 'PARSE_ERROR',\n    product_name     : context.raw_name,\n    pack_size        : null,\n    price_egp        : context.price_egp,\n    original_price_egp: context.original_price,\n    promo_type       : null,\n    discount_percent : null,\n    in_stock         : context.in_stock,\n    stock_hint       : context.stock_hint,\n    platform         : context.platform,\n    matched_sku      : 'PARSE_ERROR',\n    match_confidence : 'LOW'\n  };\n}\n\nreturn {\n  ...normalized,\n  keyword         : context.keyword,\n  our_sku         : context.our_sku,\n  is_ours         : context.is_ours,\n  category        : context.category,\n  scrape_date     : context.scrape_date,\n  platform_item_id: context.platform_item_id\n};\n"
+      },
+      "id": "a1b2c3d4-0022-0022-0022-000000000022",
+      "name": "Parse Groq Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1700, 400]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "PASTE_YOUR_GOOGLE_SHEET_ID_HERE",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Price_Log",
+          "mode": "name"
+        },
+        "filtersUI": {
+          "values": [
+            { "lookupColumn": "Matched_SKU", "lookupValue": "={{ $json.matched_sku }}" },
+            { "lookupColumn": "Platform",    "lookupValue": "={{ $json.platform }}" }
+          ]
+        },
+        "options": { "returnFirstMatch": true }
+      },
+      "id": "a1b2c3d4-0023-0023-0023-000000000023",
+      "name": "Get Previous OOS Status",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1920, 400],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ─── OOS DETECTION — Spec §6.2 ────────────────────────────────────────\nconst curr = $('Parse Groq Output').item.json;\nconst prev = $json;\n\nlet alertType    = null;\nlet first_seen_oos = prev?.First_Seen_OOS || null;\n\nconst prevInStock = prev?.In_Stock === 'TRUE' || prev?.In_Stock === true || prev?.In_Stock === 1;\nconst currInStock = curr.in_stock === true || curr.in_stock === 'true';\n\nif (prevInStock && !currInStock) {\n  alertType      = curr.is_ours ? 'WARNING_OOS_START' : 'OPPORTUNITY_COMPETITOR_OOS';\n  first_seen_oos = new Date().toISOString();\n} else if (!currInStock && curr.is_ours && first_seen_oos) {\n  const hoursOOS = (Date.now() - new Date(first_seen_oos).getTime()) / 36e5;\n  if (hoursOOS > 48) alertType = 'CRITICAL_OOS_PERSISTENT';\n}\n\nreturn { ...curr, In_Stock: currInStock, First_Seen_OOS: first_seen_oos, alertType };\n"
+      },
+      "id": "a1b2c3d4-0024-0024-0024-000000000024",
+      "name": "OOS Detection",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2140, 400]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "PASTE_YOUR_GOOGLE_SHEET_ID_HERE",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Price_Log",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date"               : "={{ $json.scrape_date }}",
+            "Platform"           : "={{ $json.platform }}",
+            "Raw_Product_Name"   : "={{ $json.product_name }}",
+            "Matched_SKU"        : "={{ $json.matched_sku }}",
+            "Price_EGP"          : "={{ $json.price_egp }}",
+            "Original_Price_EGP" : "={{ $json.original_price_egp }}",
+            "Promo_Type"         : "={{ $json.promo_type }}",
+            "Discount_Percent"   : "={{ $json.discount_percent }}",
+            "In_Stock"           : "={{ $json.In_Stock }}",
+            "Stock_Hint"         : "={{ $json.stock_hint }}",
+            "First_Seen_OOS"     : "={{ $json.First_Seen_OOS }}",
+            "Match_Confidence"   : "={{ $json.match_confidence }}",
+            "Category"           : "={{ $json.category }}",
+            "Is_Ours"            : "={{ $json.is_ours }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "a1b2c3d4-0025-0025-0025-000000000025",
+      "name": "Append to Price_Log",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [2360, 400],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ─── PRICE INDEX PREP ─────────────────────────────────────────────────\nconst curr = $json;\nif (curr.matched_sku === 'UNMATCHED' || curr.matched_sku === 'PARSE_ERROR') {\n  return { ...curr, skip_price_index: true };\n}\nreturn {\n  ...curr,\n  price_index_row: {\n    Date     : curr.scrape_date,\n    SKU      : curr.matched_sku,\n    Platform : curr.platform,\n    Category : curr.category,\n    Is_Ours  : curr.is_ours,\n    Price_EGP: curr.price_egp,\n    In_Stock : curr.In_Stock\n  },\n  skip_price_index: false\n};\n"
+      },
+      "id": "a1b2c3d4-0026-0026-0026-000000000026",
+      "name": "Price Index Prep",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2580, 400]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "PASTE_YOUR_GOOGLE_SHEET_ID_HERE",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Price_Index",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date"     : "={{ $json.price_index_row.Date }}",
+            "SKU"      : "={{ $json.price_index_row.SKU }}",
+            "Platform" : "={{ $json.price_index_row.Platform }}",
+            "Category" : "={{ $json.price_index_row.Category }}",
+            "Is_Ours"  : "={{ $json.price_index_row.Is_Ours }}",
+            "Price_EGP": "={{ $json.price_index_row.Price_EGP }}",
+            "In_Stock" : "={{ $json.price_index_row.In_Stock }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "a1b2c3d4-0027-0027-0027-000000000027",
+      "name": "Append to Price_Index",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [2800, 200],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "id": "alert-check",
+              "leftValue": "={{ $json.alertType }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "notEmpty" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a1b2c3d4-0028-0028-0028-000000000028",
+      "name": "Has Alert?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [2800, 400]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "rules": [
+            { "value": "WARNING_OOS_START" },
+            { "value": "CRITICAL_OOS_PERSISTENT" },
+            { "value": "OPPORTUNITY_COMPETITOR_OOS" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a1b2c3d4-0029-0029-0029-000000000029",
+      "name": "Route Alert Type",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [3020, 400]
+    },
+    {
+      "parameters": {
+        "chatId": "TRADE_MARKETING_CHAT_ID",
+        "text": "=🟡 *OOS ALERT — Corona SKU*\n\n*SKU:* {{ $json.matched_sku }}\n*Product:* {{ $json.product_name }}\n*Platform:* {{ $json.platform }}\n*Category:* {{ $json.category }}\n*Last Price:* {{ $json.price_egp }} EGP\n*Detected:* {{ $json.scrape_date }} 06:00 Cairo\n\n⚡ Confirm availability with platform account manager immediately.",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "a1b2c3d4-0030-0030-0030-000000000030",
+      "name": "Telegram - OOS Warning",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [3240, 200],
+      "credentials": { "telegramApi": { "name": "Telegram Bot account" } }
+    },
+    {
+      "parameters": {
+        "chatId": "TRADE_MARKETING_CHAT_ID",
+        "text": "=🔴 *CRITICAL — Corona SKU OOS >48H*\n\n*SKU:* {{ $json.matched_sku }}\n*Product:* {{ $json.product_name }}\n*Platform:* {{ $json.platform }}\n*Category:* {{ $json.category }}\n*First OOS:* {{ $json.First_Seen_OOS }}\n\n🚨 ESCALATE: Distribution / Supply review required.",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "a1b2c3d4-0031-0031-0031-000000000031",
+      "name": "Telegram - Critical OOS (Trade)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [3240, 400],
+      "credentials": { "telegramApi": { "name": "Telegram Bot account" } }
+    },
+    {
+      "parameters": {
+        "chatId": "SALES_DIRECTOR_CHAT_ID",
+        "text": "=🔴 *CRITICAL — Corona SKU OOS >48H*\n\n*SKU:* {{ $json.matched_sku }}\n*Product:* {{ $json.product_name }}\n*Platform:* {{ $json.platform }}\n*First OOS:* {{ $json.First_Seen_OOS }}\n\n🚨 Escalated to Sales Director. Distribution / Supply review required.",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "a1b2c3d4-0032-0032-0032-000000000032",
+      "name": "Telegram - Critical OOS (Director)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [3460, 400],
+      "credentials": { "telegramApi": { "name": "Telegram Bot account" } }
+    },
+    {
+      "parameters": {
+        "chatId": "TRADE_MARKETING_CHAT_ID",
+        "text": "=🟢 *OPPORTUNITY — Competitor OOS*\n\n*Competitor:* {{ $json.brand }}\n*Product:* {{ $json.product_name }}\n*Platform:* {{ $json.platform }}\n*Category:* {{ $json.category }}\n*Detected:* {{ $json.scrape_date }} 06:00 Cairo\n\n💡 Consider promo push on our competing SKU in this category.",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "a1b2c3d4-0033-0033-0033-000000000033",
+      "name": "Telegram - Competitor OOS",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [3240, 600],
+      "credentials": { "telegramApi": { "name": "Telegram Bot account" } }
+    }
+  ],
+  "connections": {
+    "Daily 06:00 Cairo": {
+      "main": [[{ "node": "Read Tracked_Keywords", "type": "main", "index": 0 }]]
+    },
+    "Read Tracked_Keywords": {
+      "main": [[{ "node": "Loop Over Keywords", "type": "main", "index": 0 }]]
+    },
+    "Loop Over Keywords": {
+      "main": [
+        [{ "node": "Switch Platform", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Switch Platform": {
+      "main": [
+        [{ "node": "HTTP - Talabat",      "type": "main", "index": 0 }],
+        [{ "node": "HTTP - Breadfast",     "type": "main", "index": 0 }],
+        [{ "node": "HTTP - Rabbit",        "type": "main", "index": 0 }],
+        [{ "node": "HTTP - Noon",          "type": "main", "index": 0 }],
+        [{ "node": "HTTP - Jumia",         "type": "main", "index": 0 }],
+        [{ "node": "HTTP - Carrefour",     "type": "main", "index": 0 }],
+        [{ "node": "HTTP - Amazon",        "type": "main", "index": 0 }],
+        [{ "node": "HTTP - InstaShop",     "type": "main", "index": 0 }],
+        [{ "node": "HTTP - Spinneys",      "type": "main", "index": 0 }],
+        [{ "node": "HTTP - Gourmet Egypt", "type": "main", "index": 0 }]
+      ]
+    },
+    "HTTP - Talabat":      { "main": [[{ "node": "Parse Raw Response", "type": "main", "index": 0 }]] },
+    "HTTP - Breadfast":    { "main": [[{ "node": "Parse Raw Response", "type": "main", "index": 0 }]] },
+    "HTTP - Rabbit":       { "main": [[{ "node": "Parse Raw Response", "type": "main", "index": 0 }]] },
+    "HTTP - Noon":         { "main": [[{ "node": "Parse Raw Response", "type": "main", "index": 0 }]] },
+    "HTTP - Jumia":        { "main": [[{ "node": "Parse Raw Response", "type": "main", "index": 0 }]] },
+    "HTTP - Carrefour":    { "main": [[{ "node": "Parse Raw Response", "type": "main", "index": 0 }]] },
+    "HTTP - Amazon":       { "main": [[{ "node": "Parse Raw Response", "type": "main", "index": 0 }]] },
+    "HTTP - InstaShop":    { "main": [[{ "node": "Parse Raw Response", "type": "main", "index": 0 }]] },
+    "HTTP - Spinneys":     { "main": [[{ "node": "Parse Raw Response", "type": "main", "index": 0 }]] },
+    "HTTP - Gourmet Egypt":{ "main": [[{ "node": "Parse Raw Response", "type": "main", "index": 0 }]] },
+    "Parse Raw Response": {
+      "main": [[{ "node": "Groq - Normalize Product", "type": "main", "index": 0 }]]
+    },
+    "Groq - Normalize Product": {
+      "main": [[{ "node": "Parse Groq Output", "type": "main", "index": 0 }]]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [[{ "node": "Groq - Normalize Product", "type": "ai_languageModel", "index": 0 }]]
+    },
+    "Parse Groq Output": {
+      "main": [[{ "node": "Get Previous OOS Status", "type": "main", "index": 0 }]]
+    },
+    "Get Previous OOS Status": {
+      "main": [[{ "node": "OOS Detection", "type": "main", "index": 0 }]]
+    },
+    "OOS Detection": {
+      "main": [[{ "node": "Append to Price_Log", "type": "main", "index": 0 }]]
+    },
+    "Append to Price_Log": {
+      "main": [[{ "node": "Price Index Prep", "type": "main", "index": 0 }]]
+    },
+    "Price Index Prep": {
+      "main": [[
+        { "node": "Append to Price_Index", "type": "main", "index": 0 },
+        { "node": "Has Alert?",            "type": "main", "index": 0 }
+      ]]
+    },
+    "Has Alert?": {
+      "main": [
+        [{ "node": "Route Alert Type",    "type": "main", "index": 0 }],
+        [{ "node": "Loop Over Keywords",  "type": "main", "index": 0 }]
+      ]
+    },
+    "Route Alert Type": {
+      "main": [
+        [{ "node": "Telegram - OOS Warning",          "type": "main", "index": 0 }],
+        [
+          { "node": "Telegram - Critical OOS (Trade)",   "type": "main", "index": 0 },
+          { "node": "Telegram - Critical OOS (Director)","type": "main", "index": 0 }
+        ],
+        [{ "node": "Telegram - Competitor OOS",        "type": "main", "index": 0 }]
+      ]
+    },
+    "Telegram - OOS Warning":          { "main": [[{ "node": "Loop Over Keywords", "type": "main", "index": 0 }]] },
+    "Telegram - Critical OOS (Trade)": { "main": [[{ "node": "Loop Over Keywords", "type": "main", "index": 0 }]] },
+    "Telegram - Competitor OOS":       { "main": [[{ "node": "Loop Over Keywords", "type": "main", "index": 0 }]] }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "timezone": "Africa/Cairo"
+  },
+  "tags": ["corona", "price-intelligence", "ecommerce", "egypt"],
+  "triggerCount": 1,
+  "updatedAt": "2026-06-19T00:00:00.000Z",
+  "versionId": "2.0.0"
+}
