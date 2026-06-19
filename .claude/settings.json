@@ -1,3 +1,14 @@
 {
-  "enabledMcpjsonServers": ["n8n-mcp"]
+  "enabledMcpjsonServers": ["n8n-mcp"],
+  "extraKnownMarketplaces": {
+    "czlonkowski": {
+      "source": {
+        "source": "github",
+        "repo": "czlonkowski/n8n-skills"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "n8n-mcp-skills@czlonkowski": true
+  }
 }
