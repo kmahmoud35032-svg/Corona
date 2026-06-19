@@ -6,7 +6,9 @@
       "env": {
         "MCP_MODE": "stdio",
         "LOG_LEVEL": "error",
-        "DISABLE_CONSOLE_OUTPUT": "true"
+        "DISABLE_CONSOLE_OUTPUT": "true",
+        "N8N_API_URL": "https://n8n.shop3m.digital",
+        "N8N_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkMGNlMmZmMy04NWNjLTQ5YTYtOWRkYy0xNjg0MTZjZjQxYzYiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwianRpIjoiMzY4Y2EwMmItM2ZmMy00MGVjLThkZGYtNWExMWNmODA3MjFlIiwiaWF0IjoxNzgxNzkyMTM0fQ.bzRo6vAxtklBiOo_4pv8lmH0YhWl9VeZrKnZXYWy0hY"
       }
     }
   }
