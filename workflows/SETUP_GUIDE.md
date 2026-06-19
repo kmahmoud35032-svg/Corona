@@ -4,8 +4,25 @@
 
 | File | Purpose |
 |---|---|
-| `corona_shelf_intelligence_main.json` | Main daily scraping workflow (Talabat + Breadfast MVP) |
+| `corona_shelf_intelligence_main.json` | Main scraping workflow — 10 platforms |
 | `corona_shelf_intelligence_report.json` | Daily AI report sub-workflow (07:30 Cairo) |
+
+---
+
+## Platforms Covered (10 منصات)
+
+| # | Platform | Priority | Frequency | Method |
+|---|---|---|---|---|
+| 1 | Talabat Mart | ⭐ Priority 1 | Daily | Direct API (DevTools) |
+| 2 | Breadfast | ⭐ Priority 1 | Daily | Direct API (DevTools) |
+| 3 | Rabbit | ⭐ Priority 1 | Daily | Direct API (DevTools) |
+| 4 | Noon Egypt | ⭐⭐ Priority 2 | 3x/week | Direct API |
+| 5 | Carrefour Egypt | ⭐⭐ Priority 2 | 3x/week | ScraperAPI / Playwright |
+| 6 | Amazon Egypt | ⭐⭐ Priority 2 | 3x/week | ScraperAPI (≤30 SKUs) |
+| 7 | Jumia Egypt | ⭐⭐⭐ Priority 3 | Weekly | ScraperAPI |
+| 8 | InstaShop (Talabat) | ⭐⭐⭐ Priority 3 | Weekly | Talabat API |
+| 9 | Spinneys Egypt | ⭐⭐⭐ Priority 3 | Weekly | ScraperAPI |
+| 10 | Gourmet Egypt | ⭐⭐⭐ Priority 3 | Weekly | ScraperAPI |
 
 ---
 
